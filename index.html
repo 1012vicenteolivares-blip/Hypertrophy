@@ -1,0 +1,3692 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>HypertrophyOS Cloud — Torso-Pierna Pro</title>
+
+  <!-- Metadatos PWA para iPhone (iOS Safari) y Android (Chrome) -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="HypertrophyOS" />
+  <meta name="application-name" content="HypertrophyOS" />
+  <meta name="theme-color" content="#0B0F17" />
+  <meta name="description" content="Sistema inteligente de entrenamiento Torso-Pierna con Doble Progresión, e1RM, Macro/Mesociclos y sincronización en la nube." />
+
+  <!-- Íconos y Manifest inyectados dinámicamente al cargar -->
+  <link id="dynamic-favicon" rel="icon" type="image/png" href="" />
+  <link id="dynamic-apple-icon" rel="apple-touch-icon" sizes="180x180" href="" />
+  <link id="dynamic-manifest" rel="manifest" href="" />
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            obsidian: '#0B0F17',
+            cardbg: '#131A26',
+            cardhover: '#192233',
+            emeraldbrand: '#10B981',
+            cyanbrand: '#06B6D4',
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-[#0B0F17] text-slate-100 font-sans antialiased selection:bg-emerald-500/30 selection:text-emerald-200 overflow-x-hidden">
+
+  <!-- Contenedor principal -->
+  <div class="min-h-screen flex flex-col lg:flex-row">
+
+    <!-- ==================== SIDEBAR ESCRITORIO ==================== -->
+    <aside class="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-[#0F1520] border-r border-slate-800/80 z-30">
+      <!-- Marca -->
+      <div class="px-5 py-5 border-b border-slate-800/80 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
+          <i data-lucide="dumbbell" class="w-5 h-5 text-[#0B0F17] stroke-[2.5]"></i>
+        </div>
+        <div class="min-w-0">
+          <h1 class="text-base font-extrabold tracking-tight text-white leading-tight truncate">HypertrophyOS</h1>
+          <p class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">Cloud · Torso-Pierna</p>
+        </div>
+      </div>
+
+      <!-- Estado de Nube en Sidebar -->
+      <div class="px-4 pt-3.5 pb-1">
+        <button onclick="navigateTo('cloud')" id="desktop-cloud-badge" class="w-full px-3 py-2 rounded-xl bg-[#131A26] hover:bg-[#192233] border border-slate-800 flex items-center justify-between gap-2 transition text-left">
+          <!-- Renderizado por JS -->
+        </button>
+      </div>
+
+      <!-- Navegación escritorio -->
+      <nav id="desktop-nav" class="flex-1 px-3 py-3 space-y-1 overflow-y-auto">
+        <!-- Renderizado por JS -->
+      </nav>
+
+      <!-- Tarjeta de Mesociclo Activo -->
+      <div class="p-4 border-t border-slate-800/80">
+        <div id="sidebar-cycle-card" class="p-3.5 rounded-xl bg-[#0B0F17] border border-slate-800/90 space-y-2">
+          <!-- Renderizado por JS -->
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==================== CABECERA MÓVIL (con safe-area iPhone) ==================== -->
+    <header class="lg:hidden sticky top-0 z-30 bg-[#0F1520]/95 backdrop-blur-xl border-b border-slate-800/80 px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center shrink-0 shadow-md shadow-emerald-500/20">
+          <i data-lucide="dumbbell" class="w-4 h-4 text-[#0B0F17] stroke-[2.5]"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="text-sm font-extrabold text-white leading-tight truncate">HypertrophyOS</div>
+          <div id="mobile-header-cycle" class="text-[11px] text-cyan-400 font-medium truncate">Mesociclo activo</div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 shrink-0">
+        <!-- Badge de estado de nube clickeable -->
+        <button onclick="navigateTo('cloud')" id="mobile-cloud-badge" class="px-2.5 py-1.5 rounded-xl bg-[#131A26] border border-slate-800 flex items-center gap-1.5 text-[11px] font-bold active:scale-95 transition">
+          <!-- Renderizado por JS -->
+        </button>
+        <button onclick="navigateTo('history')" class="p-2 rounded-xl bg-[#131A26] border border-slate-800 text-slate-300 hover:text-white active:scale-95 transition" title="Historial">
+          <i data-lucide="history" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+    <main class="flex-1 lg:pl-64 pb-[calc(5.5rem+env(safe-area-inset-bottom))] lg:pb-12 min-w-0">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7">
+        <div id="app-view" class="space-y-6"></div>
+      </div>
+    </main>
+
+    <!-- ==================== BARRA INFERIOR MÓVIL (con safe-area iPhone) ==================== -->
+    <nav id="mobile-nav" class="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-[#0F1520]/95 backdrop-blur-xl border-t border-slate-800/80 px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex items-center justify-around">
+      <!-- Renderizado por JS -->
+    </nav>
+  </div>
+
+  <!-- ==================== TEMPORIZADOR DE DESCANSO FLOTANTE ==================== -->
+  <div id="rest-timer-widget" class="hidden fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] lg:bottom-6 right-4 left-4 sm:left-auto sm:w-80 z-40 rounded-2xl bg-[#131A26]/95 backdrop-blur-xl border border-emerald-500/40 shadow-2xl shadow-black/70 p-3.5 transition-all">
+    <div class="flex items-center justify-between gap-2 mb-2">
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+        <span id="timer-exercise-label" class="text-xs font-semibold text-slate-300 truncate">Descanso</span>
+      </div>
+      <button onclick="stopRestTimer()" class="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition" title="Cerrar temporizador">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+    <div class="flex items-center justify-between gap-3 mb-2.5">
+      <div id="timer-display" class="text-3xl font-extrabold tabular-nums tracking-tight text-white">02:00</div>
+      <div class="flex items-center gap-1.5">
+        <button onclick="adjustRestTimer(-15)" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 active:scale-95 transition">-15s</button>
+        <button onclick="togglePauseRestTimer()" id="timer-pause-btn" class="p-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 active:scale-95 transition" title="Pausar/Reanudar">
+          <i data-lucide="pause" class="w-4 h-4"></i>
+        </button>
+        <button onclick="adjustRestTimer(15)" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 active:scale-95 transition">+15s</button>
+      </div>
+    </div>
+    <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+      <div id="timer-progress" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 transition-all duration-300" style="width: 100%"></div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL UNIVERSAL (Cero alert/confirm nativo) ==================== -->
+  <div id="modal-backdrop" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div id="modal-box" class="w-full max-w-lg rounded-2xl bg-[#131A26] border border-slate-700/80 shadow-2xl overflow-hidden my-auto">
+      <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between gap-3">
+        <h3 id="modal-title" class="text-base font-bold text-white">Título</h3>
+        <button onclick="closeModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div id="modal-body" class="p-5 max-h-[75vh] overflow-y-auto"></div>
+      <div id="modal-footer" class="px-5 py-3.5 bg-[#0B0F17]/80 border-t border-slate-800 flex items-center justify-end gap-2"></div>
+    </div>
+  </div>
+
+  <!-- ==================== TOASTS ==================== -->
+  <div id="toast-container" class="fixed top-[max(1rem,env(safe-area-inset-top))] right-4 z-50 flex flex-col gap-2 max-w-sm w-[calc(100%-2rem)] pointer-events-none"></div>
+
+  <!-- Input oculto para importar JSON -->
+  <input type="file" id="json-import-input" accept=".json,application/json" class="hidden" />
+
+  <!-- ==================== SCRIPT PRINCIPAL (ES MODULE + FIREBASE 11) ==================== -->
+  <script type="module">
+    import { initializeApp, getApps, deleteApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import {
+      getAuth,
+      signInAnonymously,
+      signInWithCustomToken,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    /*************************************************************************
+     * 0. CONFIGURACIÓN MANUAL DE FIREBASE (OPCIONAL SI LO SUBES A NETLIFY)
+     * -----------------------------------------------------------------------
+     * Si deseas dejar tu propia nube Firebase fija dentro de este archivo HTML,
+     * pega aquí tu objeto firebaseConfig de la consola de Firebase (Plan Spark Gratis).
+     * También puedes pegarlo directamente desde la app sin tocar código en:
+     * "Nube y Cuenta" -> "Configurar mi Firebase Gratis".
+     *************************************************************************/
+    const CUSTOM_FIREBASE_CONFIG = {
+      apiKey: "",
+      authDomain: "",
+      projectId: "",
+      storageBucket: "",
+      messagingSenderId: "",
+      appId: ""
+    };
+
+    const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'hypertrophy-os-cloud';
+    const LOCAL_DB_KEY = 'hypertrophyOS_cloud_state_v2';
+    const LOCAL_FB_CFG_KEY = 'hypertrophyOS_custom_fb_cfg_v2';
+    const IDB_NAME = 'HypertrophyOSCloudDB';
+    const IDB_STORE = 'kv';
+
+    /*************************************************************************
+     * 1. GENERADOR DINÁMICO DE ÍCONO PWA Y MANIFEST (iOS & ANDROID)
+     *************************************************************************/
+    function initDynamicPWAAssets() {
+      try {
+        const generateIconDataURL = (size) => {
+          const canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+
+          // Fondo oscuro con degradado sutil
+          const grad = ctx.createLinearGradient(0, 0, size, size);
+          grad.addColorStop(0, '#0F172A');
+          grad.addColorStop(1, '#0B0F17');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, size, size);
+
+          // Brillo esmeralda radial suave
+          const glow = ctx.createRadialGradient(size * 0.5, size * 0.45, size * 0.05, size * 0.5, size * 0.5, size * 0.5);
+          glow.addColorStop(0, 'rgba(16, 185, 129, 0.28)');
+          glow.addColorStop(1, 'rgba(16, 185, 129, 0)');
+          ctx.fillStyle = glow;
+          ctx.fillRect(0, 0, size, size);
+
+          // Gráfico ascendente de fondo
+          ctx.strokeStyle = 'rgba(6, 182, 212, 0.45)';
+          ctx.lineWidth = size * 0.032;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.beginPath();
+          ctx.moveTo(size * 0.16, size * 0.76);
+          ctx.lineTo(size * 0.38, size * 0.62);
+          ctx.lineTo(size * 0.58, size * 0.68);
+          ctx.lineTo(size * 0.84, size * 0.26);
+          ctx.stroke();
+
+          // Mancuerna / Barra esmeralda estilizada
+          const barGrad = ctx.createLinearGradient(size * 0.2, size * 0.3, size * 0.8, size * 0.7);
+          barGrad.addColorStop(0, '#10B981');
+          barGrad.addColorStop(1, '#06B6D4');
+          ctx.fillStyle = barGrad;
+
+          const drawRoundRect = (x, y, w, h, r) => {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+            ctx.fill();
+          };
+
+          // Barra central
+          drawRoundRect(size * 0.26, size * 0.455, size * 0.48, size * 0.09, size * 0.04);
+          // Discos internos
+          drawRoundRect(size * 0.22, size * 0.30, size * 0.10, size * 0.40, size * 0.04);
+          drawRoundRect(size * 0.68, size * 0.30, size * 0.10, size * 0.40, size * 0.04);
+          // Discos externos
+          drawRoundRect(size * 0.12, size * 0.36, size * 0.08, size * 0.28, size * 0.035);
+          drawRoundRect(size * 0.80, size * 0.36, size * 0.08, size * 0.28, size * 0.035);
+
+          return canvas.toDataURL('image/png');
+        };
+
+        const icon180 = generateIconDataURL(180);
+        const icon512 = generateIconDataURL(512);
+
+        const fav = document.getElementById('dynamic-favicon');
+        const apple = document.getElementById('dynamic-apple-icon');
+        if (fav) fav.href = icon180;
+        if (apple) apple.href = icon180;
+
+        // Manifest dinámico para Android Chrome / instalación PWA
+        const manifest = {
+          name: 'HypertrophyOS Cloud — Torso-Pierna Pro',
+          short_name: 'HypertrophyOS',
+          description: 'Entrenamiento Torso-Pierna científico con Doble Progresión, PRs y nube.',
+          start_url: '.',
+          display: 'standalone',
+          orientation: 'portrait',
+          background_color: '#0B0F17',
+          theme_color: '#0B0F17',
+          icons: [
+            { src: icon180, sizes: '180x180', type: 'image/png', purpose: 'any' },
+            { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+          ]
+        };
+
+        const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+        const manifestURL = URL.createObjectURL(blob);
+        const manLink = document.getElementById('dynamic-manifest');
+        if (manLink) manLink.href = manifestURL;
+      } catch (err) {
+        console.warn('No se pudo generar el ícono/manifest PWA dinámico:', err);
+      }
+    }
+
+    /*************************************************************************
+     * 2. ALMACENAMIENTO LOCAL RESILIENTE (IndexedDB + LocalStorage Fallback)
+     *************************************************************************/
+    const LocalStore = {
+      dbPromise: null,
+      openDB() {
+        if (this.dbPromise) return this.dbPromise;
+        this.dbPromise = new Promise((resolve) => {
+          try {
+            if (!window.indexedDB) return resolve(null);
+            const req = indexedDB.open(IDB_NAME, 1);
+            req.onupgradeneeded = (e) => {
+              const db = e.target.result;
+              if (!db.objectStoreNames.contains(IDB_STORE)) {
+                db.createObjectStore(IDB_STORE);
+              }
+            };
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => resolve(null);
+          } catch (e) {
+            resolve(null);
+          }
+        });
+        return this.dbPromise;
+      },
+      async get(key) {
+        // Primero intenta IndexedDB (más resistente en iOS PWA), luego localStorage
+        try {
+          const db = await this.openDB();
+          if (db) {
+            const val = await new Promise((resolve) => {
+              const tx = db.transaction(IDB_STORE, 'readonly');
+              const req = tx.objectStore(IDB_STORE).get(key);
+              req.onsuccess = () => resolve(req.result ?? null);
+              req.onerror = () => resolve(null);
+            });
+            if (val !== null && val !== undefined) return val;
+          }
+        } catch (e) {}
+        try {
+          const raw = window.localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+          return null;
+        }
+      },
+      async set(key, value) {
+        try {
+          window.localStorage.setItem(key, JSON.stringify(value));
+        } catch (e) {}
+        try {
+          const db = await this.openDB();
+          if (db) {
+            await new Promise((resolve) => {
+              const tx = db.transaction(IDB_STORE, 'readwrite');
+              tx.objectStore(IDB_STORE).put(value, key);
+              tx.oncomplete = () => resolve(true);
+              tx.onerror = () => resolve(false);
+            });
+          }
+        } catch (e) {}
+      },
+      async remove(key) {
+        try { window.localStorage.removeItem(key); } catch (e) {}
+        try {
+          const db = await this.openDB();
+          if (db) {
+            await new Promise((resolve) => {
+              const tx = db.transaction(IDB_STORE, 'readwrite');
+              tx.objectStore(IDB_STORE).delete(key);
+              tx.oncomplete = () => resolve(true);
+              tx.onerror = () => resolve(false);
+            });
+          }
+        } catch (e) {}
+      }
+    };
+
+    /*************************************************************************
+     * 3. RUTINA TORSO-PIERNA BASE (4 DÍAS · 2 SERIES EFECTIVAS)
+     *************************************************************************/
+    const MUSCLE_GROUPS = [
+      'Pecho',
+      'Espalda',
+      'Hombro',
+      'Hombro Posterior',
+      'Tríceps',
+      'Bíceps',
+      'Cuádriceps',
+      'Isquios',
+      'Isquios/Glúteo',
+      'Glúteo',
+      'Cuádriceps/Glúteo',
+      'Aductores',
+      'Gemelos',
+      'Core'
+    ];
+
+    function getDefaultRoutine() {
+      return [
+        {
+          id: 'day_torso_a',
+          name: 'Torso A',
+          subtitle: 'Pecho Inclinado, Dorsal, Espalda Alta y Brazos en Estiramiento',
+          exercises: [
+            {
+              id: 'ex_ta_1',
+              name: 'Press Inclinado (Máquina / Multipower 30°)',
+              muscle: 'Pecho',
+              sets: 2,
+              repMin: 6,
+              repMax: 8,
+              rirTarget: '1-2',
+              restSec: 180,
+              notes: 'Inclinación 30° optimiza el haz clavicular sin sobrecargar deltoides anterior.'
+            },
+            {
+              id: 'ex_ta_2',
+              name: 'Jalón al Pecho Agarre Neutro',
+              muscle: 'Espalda',
+              sets: 2,
+              repMin: 8,
+              repMax: 10,
+              rirTarget: '1-2',
+              restSec: 180,
+              notes: 'Codos pegados al torso para alinear la carga con el dorsal ancho.'
+            },
+            {
+              id: 'ex_ta_3',
+              name: 'Remo con Apoyo al Pecho (Agarre Ancho)',
+              muscle: 'Espalda',
+              sets: 2,
+              repMin: 8,
+              repMax: 10,
+              rirTarget: '1-2',
+              restSec: 120,
+              notes: 'Pecho apoyado para trabajar trapecio medio y romboides sin fatiga lumbar.'
+            },
+            {
+              id: 'ex_ta_4',
+              name: 'Elevaciones Laterales en Polea (Altura muñeca)',
+              muscle: 'Hombro',
+              sets: 2,
+              repMin: 10,
+              repMax: 15,
+              rirTarget: '0-1',
+              restSec: 120,
+              notes: 'Torque constante desde el estiramiento en plano escapular.'
+            },
+            {
+              id: 'ex_ta_5',
+              name: 'Extensión de Tríceps Sobre la Cabeza en Polea',
+              muscle: 'Tríceps',
+              sets: 2,
+              repMin: 10,
+              repMax: 12,
+              rirTarget: '0-1',
+              restSec: 90,
+              notes: 'Hombro flexionado maximiza hipertrofia mediada por estiramiento de la cabeza larga.'
+            },
+            {
+              id: 'ex_ta_6',
+              name: 'Curl de Bíceps en Polea Baja (Brazo atrás)',
+              muscle: 'Bíceps',
+              sets: 2,
+              repMin: 10,
+              repMax: 12,
+              rirTarget: '0-1',
+              restSec: 90,
+              notes: 'Hombro extendido carga el bíceps en máximo estiramiento sin balanceo.'
+            }
+          ]
+        },
+        {
+          id: 'day_pierna_a',
+          name: 'Pierna A',
+          subtitle: 'Cuádriceps, Cadena Posterior, Gemelos y Core',
+          exercises: [
+            {
+              id: 'ex_pa_1',
+              name: 'Sentadilla Hack / Prensa 45°',
+              muscle: 'Cuádriceps',
+              sets: 2,
+              repMin: 6,
+              repMax: 8,
+              rirTarget: '1-2',
+              restSec: 180,
+              notes: 'Máxima flexión de rodilla sin despegar lumbar del respaldo.'
+            },
+            {
+              id: 'ex_pa_2',
+              name: 'Curl Femoral Sentado',
+              muscle: 'Isquios',
+              sets: 2,
+              repMin: 8,
+              repMax: 12,
+              rirTarget: '1-2',
+              restSec: 150,
+              notes: 'Cadera flexionada preestira los isquios para mayor hipertrofia.'
+            },
+            {
+              id: 'ex_pa_3',
+              name: 'Peso Muerto Rumano',
+              muscle: 'Isquios/Glúteo',
+              sets: 2,
+              repMin: 6,
+              repMax: 8,
+              rirTarget: '1-2',
+              restSec: 180,
+              notes: 'Cadera atrás con espalda neutra hasta máximo estiramiento.'
+            },
+            {
+              id: 'ex_pa_4',
+              name: 'Extensión de Cuádriceps en Máquina',
+              muscle: 'Cuádriceps',
+              sets: 2,
+              repMin: 10,
+              repMax: 12,
+              rirTarget: '0-1',
+              restSec: 120,
+              notes: 'Estímulo directo al recto femoral; baja en 3 segundos.'
+            },
+            {
+              id: 'ex_pa_5',
+              name: 'Gemelos Rodillas Extendidas',
+              muscle: 'Gemelos',
+              sets: 2,
+              repMin: 10,
+              repMax: 15,
+              rirTarget: '0-1',
+              restSec: 90,
+              notes: 'Pausa estricta de 2s en estiramiento abajo para anular rebote del tendón.'
+            },
+            {
+              id: 'ex_pa_6',
+              name: 'Crunch Abdominal en Polea Alta',
+              muscle: 'Core',
+              sets: 2,
+              repMin: 10,
+              repMax: 15,
+              rirTarget: '0-1',
+              restSec: 90,
+              notes: 'Enrolla la columna hacia el ombligo, no flexiones solo la cadera.'
+            }
+          ]
+        },
+        {
+          id: 'day_torso_b',
+          name: 'Torso B',
+          subtitle: 'Pecho Plano, Remo Unilateral, Deltoides y Brazos',
+          exercises: [
+            {
+              id: 'ex_tb_1',
+              name: 'Press Plano (Máquina / Mancuernas)',
+              muscle: 'Pecho',
+              sets: 2,
+              repMin: 6,
+              repMax: 8,
+              rirTarget: '1-2',
+              restSec: 180,
+              notes: 'Codos a 45° para proteger el hombro y alinear fibras medias.'
+            },
+            {
+              id: 'ex_tb_2',
+              name: 'Remo Unilateral Neutro',
+              muscle: 'Espalda',
+              sets: 2,
+              repMin: 8,
+              repMax: 10,
+              rirTarget: '1-2',
+              restSec: 150,
+              notes: 'Estabilidad unilateral y codo hacia la cadera para aislar dorsal.'
+            },
+            {
+              id: 'ex_tb_3',
+              name: 'Peck Deck (Aducción Horizontal)',
+              muscle: 'Pecho',
+              sets: 2,
+              repMin: 10,
+              repMax: 12,
+              rirTarget: '0-1',
+              restSec: 120,
+              notes: 'Acerca los bíceps al centro controlando el estiramiento.'
+            },
+            {
+              id: 'ex_tb_4',
+              name: 'Peck Deck Inverso / Face Pull',
+              muscle: 'Hombro Posterior',
+              sets: 2,
+              repMin: 12,
+              repMax: 15,
+              rirTarget: '0-1',
+              restSec: 120,
+              notes: 'Sin encoger hombros hacia las orejas.'
+            },
+            {
+              id: 'ex_tb_5',
+              name: 'Elevaciones Laterales (Máquina / Mancuernas)',
+              muscle: 'Hombro',
+              sets: 2,
+              repMin: 10,
+              repMax: 12,
+              rirTarget: '0-1',
+              restSec: 90,
+              notes: 'Sube guiando con los codos y sin impulso lumbar.'
+            },
+            {
+              id: 'ex_tb_6',
+              name: 'Tríceps Pushdown en Polea',
+              muscle: 'Tríceps',
+              sets: 2,
+              repMin: 10,
+              repMax: 12,
+              rirTarget: '0-1',
+              restSec: 90,
+              notes: 'Complementa cabezas lateral y medial con brazos pegados al cuerpo.'
+            },
+            {
+              id: 'ex_tb_7',
+              name: 'Curl Predicador (Máquina / Banco Scott)',
+              muscle: 'Bíceps',
+              sets: 2,
+              repMin: 10,
+              repMax: 12,
+              rirTarget: '0-1',
+              restSec: 90,
+              notes: 'Estabilidad total en el inicio del movimiento.'
+            }
+          ]
+        },
+        {
+          id: 'day_pierna_b',
+          name: 'Pierna B',
+          subtitle: 'Glúteo, Unilateral, Muslo Completo, Aductores y Core',
+          exercises: [
+            {
+              id: 'ex_pb_1',
+              name: 'Hip Thrust (Máquina / Barra)',
+              muscle: 'Glúteo',
+              sets: 2,
+              repMin: 8,
+              repMax: 10,
+              rirTarget: '1-2',
+              restSec: 180,
+              notes: 'Mirada al frente y costillas abajo para extensión pura de cadera.'
+            },
+            {
+              id: 'ex_pb_2',
+              name: 'Sentadilla Búlgara',
+              muscle: 'Cuádriceps/Glúteo',
+              sets: 2,
+              repMin: 8,
+              repMax: 10,
+              rirTarget: '1-2',
+              restSec: 180,
+              notes: 'Torso 15° adelante para repartir tensión entre glúteo y cuádriceps.'
+            },
+            {
+              id: 'ex_pb_3',
+              name: 'Curl Femoral (Tumbado / Sentado)',
+              muscle: 'Isquios',
+              sets: 2,
+              repMin: 10,
+              repMax: 12,
+              rirTarget: '0-1',
+              restSec: 120,
+              notes: 'Presiona la pelvis contra el banco evitando arquear lumbar.'
+            },
+            {
+              id: 'ex_pb_4',
+              name: 'Extensión de Cuádriceps en Máquina',
+              muscle: 'Cuádriceps',
+              sets: 2,
+              repMin: 10,
+              repMax: 12,
+              rirTarget: '0-1',
+              restSec: 120,
+              notes: 'Excéntrica controlada de 3s cerca del fallo.'
+            },
+            {
+              id: 'ex_pb_5',
+              name: 'Aductores en Máquina',
+              muscle: 'Aductores',
+              sets: 2,
+              repMin: 10,
+              repMax: 15,
+              rirTarget: '0-1',
+              restSec: 90,
+              notes: 'Rango completo cómodo para estimular el aductor mayor.'
+            },
+            {
+              id: 'ex_pb_6',
+              name: 'Gemelos Rodillas Extendidas',
+              muscle: 'Gemelos',
+              sets: 2,
+              repMin: 10,
+              repMax: 15,
+              rirTarget: '0-1',
+              restSec: 90,
+              notes: 'Pausa de 2s abajo en cada repetición.'
+            },
+            {
+              id: 'ex_pb_7',
+              name: 'Elevación de Piernas en Silla Romana',
+              muscle: 'Core',
+              sets: 2,
+              repMin: 10,
+              repMax: 15,
+              rirTarget: '0-1',
+              restSec: 90,
+              notes: 'Enrolla la pelvis arriba para contraer el recto abdominal.'
+            }
+          ]
+        }
+      ];
+    }
+
+    function getTodayISO() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function addDaysISO(iso, days) {
+      const d = new Date(iso + 'T12:00:00');
+      d.setDate(d.getDate() + days);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function getDefaultState() {
+      const today = getTodayISO();
+      return {
+        version: '2.0-cloud',
+        updatedAt: Date.now(),
+        hasDemoData: false,
+        settings: {
+          unit: 'kg',
+          minIncrement: 2.5,
+          timerSound: true
+        },
+        routine: getDefaultRoutine(),
+        macrocycles: [
+          {
+            id: 'macro_base_1',
+            name: 'Macrociclo 1 — Hipertrofia Equilibrada',
+            goal: 'Hipertrofia',
+            startDate: today,
+            endDate: addDaysISO(today, 180),
+            notes: 'Torso-Pierna 4 días con 2 series efectivas por ejercicio y doble progresión.',
+            active: true
+          }
+        ],
+        mesocycles: [
+          {
+            id: 'meso_base_1',
+            macroId: 'macro_base_1',
+            name: 'Mesociclo 1: Acumulación Base',
+            weeks: 6,
+            deloadWeek: 6,
+            rirProgression: 'RIR 2 → RIR 0-1',
+            currentWeek: 1,
+            active: true,
+            notes: 'Semanas 1-5 acumulación progresiva; Semana 6 descarga (-20% carga, RIR 3-4).'
+          }
+        ],
+        workouts: [],
+        activeDraft: null
+      };
+    }
+
+    /*************************************************************************
+     * 4. ESTADO GLOBAL Y GESTOR DE NUBE (FIREBASE AUTH + FIRESTORE)
+     *************************************************************************/
+    let state = getDefaultState();
+    let currentTab = 'dashboard';
+    let charts = {};
+
+    // Estado de conexión Firebase
+    let cloud = {
+      app: null,
+      auth: null,
+      db: null,
+      user: null,
+      configSource: 'none', // 'env' | 'custom_code' | 'custom_modal' | 'none'
+      activeConfig: null,
+      status: 'local', // 'local' | 'connecting' | 'synced' | 'saving' | 'offline' | 'error'
+      lastSyncAt: null,
+      unsubSnapshot: null,
+      saveTimer: null,
+      isApplyingRemote: false,
+      authMode: 'login', // 'login' | 'register'
+      errorMsg: ''
+    };
+
+    let uiFilters = {
+      analyticsScope: 'all',
+      analyticsExercise: '',
+      prSearch: '',
+      prMuscle: 'all',
+      historySearch: '',
+      historyDay: 'all',
+      historyMeso: 'all',
+      routineSelectedDayId: null,
+      expandedHistoryIds: new Set(),
+      openWarmupIds: new Set(),
+      hubSubtab: 'routine' // Para móvil: 'routine' | 'cloud'
+    };
+
+    let restTimer = {
+      intervalId: null,
+      totalSec: 120,
+      remainingSec: 0,
+      paused: false,
+      label: ''
+    };
+
+    function isValidFirebaseConfig(cfg) {
+      return !!(cfg && typeof cfg === 'object' && cfg.apiKey && cfg.projectId && cfg.appId);
+    }
+
+    async function resolveFirebaseConfig() {
+      // 1. Prioridad: configuración pegada manualmente en el modal (si el usuario configuró su nube propia)
+      const savedModalCfg = await LocalStore.get(LOCAL_FB_CFG_KEY);
+      if (isValidFirebaseConfig(savedModalCfg)) {
+        return { config: savedModalCfg, source: 'custom_modal' };
+      }
+      // 2. Bloque manual dentro del código HTML (CUSTOM_FIREBASE_CONFIG)
+      if (isValidFirebaseConfig(CUSTOM_FIREBASE_CONFIG)) {
+        return { config: CUSTOM_FIREBASE_CONFIG, source: 'custom_code' };
+      }
+      // 3. Configuración inyectada automáticamente por el entorno (__firebase_config)
+      if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+        try {
+          const parsed = typeof __firebase_config === 'string' ? JSON.parse(__firebase_config) : __firebase_config;
+          if (isValidFirebaseConfig(parsed)) {
+            return { config: parsed, source: 'env' };
+          }
+        } catch (e) {}
+      }
+      return { config: null, source: 'none' };
+    }
+
+    function getUserDocRef(uid) {
+      // Ruta estricta por usuario aislada: /artifacts/{appId}/users/{uid}/hypertrophy/state
+      return doc(cloud.db, 'artifacts', APP_ID, 'users', uid, 'hypertrophy', 'state');
+    }
+
+    async function initCloudConnection() {
+      // Limpiar instancia previa si existía
+      if (cloud.unsubSnapshot) {
+        cloud.unsubSnapshot();
+        cloud.unsubSnapshot = null;
+      }
+      cloud.errorMsg = '';
+
+      const { config, source } = await resolveFirebaseConfig();
+      cloud.activeConfig = config;
+      cloud.configSource = source;
+
+      if (!config) {
+        cloud.status = navigator.onLine ? 'local' : 'offline';
+        updateCloudBadges();
+        return;
+      }
+
+      try {
+        cloud.status = 'connecting';
+        updateCloudBadges();
+
+        // Reutilizar o reiniciar app Firebase
+        const existingApps = getApps();
+        for (const a of existingApps) {
+          await deleteApp(a);
+        }
+
+        cloud.app = initializeApp(config);
+        cloud.auth = getAuth(cloud.app);
+        cloud.db = getFirestore(cloud.app);
+
+        // Si estamos en el entorno Canvas con token automático, autenticar primero antes de queries
+        if (source === 'env') {
+          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            await signInWithCustomToken(cloud.auth, __initial_auth_token);
+          } else {
+            await signInAnonymously(cloud.auth);
+          }
+        }
+
+        // Escuchar cambios de sesión Auth
+        onAuthStateChanged(cloud.auth, async (user) => {
+          cloud.user = user || null;
+          if (cloud.unsubSnapshot) {
+            cloud.unsubSnapshot();
+            cloud.unsubSnapshot = null;
+          }
+
+          if (user) {
+            await attachFirestoreListener(user);
+          } else {
+            cloud.status = navigator.onLine ? 'local' : 'offline';
+            updateCloudBadges();
+            if (currentTab === 'cloud') renderApp();
+          }
+        });
+      } catch (err) {
+        console.error('Error inicializando Firebase:', err);
+        cloud.status = 'error';
+        cloud.errorMsg = err.message || 'No se pudo conectar a Firebase.';
+        updateCloudBadges();
+      }
+    }
+
+    async function attachFirestoreListener(user) {
+      if (!cloud.db || !user) return;
+      try {
+        const ref = getUserDocRef(user.uid);
+        cloud.status = 'connecting';
+        updateCloudBadges();
+
+        // Verificar si existe documento en la nube primero
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          const remote = snap.data();
+          const remoteTime = remote.updatedAt || 0;
+          const localTime = state.updatedAt || 0;
+
+          if (remoteTime >= localTime || (state.workouts.length === 0 && (remote.workouts || []).length > 0)) {
+            applyRemoteState(remote);
+          } else {
+            // El dispositivo local tiene datos más nuevos (ej. entrenó sin señal en el gym) -> subir a la nube
+            await pushStateToCloud(true);
+          }
+        } else {
+          // Primera vez de este usuario en la nube -> subir su estado actual
+          await pushStateToCloud(true);
+        }
+
+        // Suscripción en tiempo real con callback de error obligatorio
+        cloud.unsubSnapshot = onSnapshot(
+          ref,
+          (docSnap) => {
+            if (!docSnap.exists()) return;
+            const remote = docSnap.data();
+            if ((remote.updatedAt || 0) > (state.updatedAt || 0)) {
+              applyRemoteState(remote);
+            }
+            cloud.status = navigator.onLine ? 'synced' : 'offline';
+            cloud.lastSyncAt = Date.now();
+            updateCloudBadges();
+          },
+          (err) => {
+            console.error('Error en onSnapshot Firestore:', err);
+            cloud.status = 'error';
+            cloud.errorMsg = 'Permiso denegado o error de red en Firestore. Revisa las reglas de seguridad.';
+            updateCloudBadges();
+          }
+        );
+
+        cloud.status = navigator.onLine ? 'synced' : 'offline';
+        cloud.lastSyncAt = Date.now();
+        updateCloudBadges();
+        if (currentTab === 'cloud') renderApp();
+      } catch (err) {
+        console.error('Error conectando Firestore:', err);
+        cloud.status = 'error';
+        cloud.errorMsg = err.message || 'Error al sincronizar con Firestore.';
+        updateCloudBadges();
+      }
+    }
+
+    function applyRemoteState(remote) {
+      cloud.isApplyingRemote = true;
+      const def = getDefaultState();
+      state = {
+        ...def,
+        ...remote,
+        settings: { ...def.settings, ...(remote.settings || {}) },
+        routine: Array.isArray(remote.routine) && remote.routine.length ? remote.routine : def.routine,
+        macrocycles: Array.isArray(remote.macrocycles) ? remote.macrocycles : def.macrocycles,
+        mesocycles: Array.isArray(remote.mesocycles) ? remote.mesocycles : def.mesocycles,
+        workouts: Array.isArray(remote.workouts) ? remote.workouts : []
+      };
+      LocalStore.set(LOCAL_DB_KEY, state);
+      cloud.isApplyingRemote = false;
+      renderApp();
+    }
+
+    async function pushStateToCloud(immediate = false) {
+      if (!cloud.db || !cloud.user || cloud.isApplyingRemote) return;
+      if (!navigator.onLine) {
+        cloud.status = 'offline';
+        updateCloudBadges();
+        return;
+      }
+
+      const executePush = async () => {
+        if (!cloud.user) return;
+        try {
+          cloud.status = 'saving';
+          updateCloudBadges();
+          const ref = getUserDocRef(cloud.user.uid);
+          // Serializar limpio (Firestore no acepta valores undefined)
+          const cleanPayload = JSON.parse(JSON.stringify(state));
+          await setDoc(ref, cleanPayload, { merge: false });
+          cloud.status = 'synced';
+          cloud.lastSyncAt = Date.now();
+          cloud.errorMsg = '';
+          updateCloudBadges();
+        } catch (err) {
+          console.error('Error guardando en Firestore:', err);
+          cloud.status = 'error';
+          cloud.errorMsg = err.message || 'Error al guardar en la nube.';
+          updateCloudBadges();
+        }
+      };
+
+      if (cloud.saveTimer) clearTimeout(cloud.saveTimer);
+      if (immediate) {
+        await executePush();
+      } else {
+        cloud.status = 'saving';
+        updateCloudBadges();
+        cloud.saveTimer = setTimeout(executePush, 900);
+      }
+    }
+
+    function saveState() {
+      state.updatedAt = Date.now();
+      // Guardado local instantáneo (IndexedDB + localStorage)
+      LocalStore.set(LOCAL_DB_KEY, state);
+      // Sincronización en la nube con debounce si hay sesión activa
+      if (cloud.user && cloud.db) {
+        pushStateToCloud(false);
+      }
+    }
+
+    function updateCloudBadges() {
+      const desktopEl = document.getElementById('desktop-cloud-badge');
+      const mobileEl = document.getElementById('mobile-cloud-badge');
+
+      let dotClass = 'bg-amber-400';
+      let textClass = 'text-amber-300';
+      let label = 'Modo Local';
+      let subLabel = 'Sin nube conectada';
+
+      if (cloud.status === 'synced') {
+        dotClass = 'bg-emerald-400';
+        textClass = 'text-emerald-300';
+        label = 'Nube Activa';
+        subLabel = cloud.user?.email || (cloud.user?.isAnonymous ? 'Sesión Nube Automática' : 'Sincronizado');
+      } else if (cloud.status === 'saving' || cloud.status === 'connecting') {
+        dotClass = 'bg-cyan-400 animate-pulse';
+        textClass = 'text-cyan-300';
+        label = cloud.status === 'saving' ? 'Guardando...' : 'Conectando...';
+        subLabel = 'Sincronizando datos';
+      } else if (cloud.status === 'offline') {
+        dotClass = 'bg-amber-400';
+        textClass = 'text-amber-300';
+        label = 'Offline (Local)';
+        subLabel = 'Subirá al volver señal';
+      } else if (cloud.status === 'error') {
+        dotClass = 'bg-rose-500';
+        textClass = 'text-rose-300';
+        label = 'Error Nube';
+        subLabel = 'Guardado local activo';
+      }
+
+      if (desktopEl) {
+        desktopEl.innerHTML = `
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="w-2.5 h-2.5 rounded-full ${dotClass} shrink-0"></span>
+            <div class="min-w-0">
+              <div class="text-xs font-extrabold ${textClass} leading-tight truncate">${label}</div>
+              <div class="text-[10px] text-slate-400 truncate">${escapeHTML(subLabel)}</div>
+            </div>
+          </div>
+          <i data-lucide="cloud" class="w-4 h-4 text-slate-500 shrink-0"></i>
+        `;
+      }
+
+      if (mobileEl) {
+        mobileEl.innerHTML = `
+          <span class="w-2 h-2 rounded-full ${dotClass} shrink-0"></span>
+          <span class="${textClass}">${label}</span>
+        `;
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Eventos online / offline para sincronizar al volver la señal en el gimnasio
+    window.addEventListener('online', () => {
+      if (cloud.user && cloud.db) {
+        showToast('Conexión recuperada. Sincronizando entrenamientos con la nube...', 'info');
+        pushStateToCloud(true);
+      } else {
+        cloud.status = 'local';
+        updateCloudBadges();
+      }
+    });
+    window.addEventListener('offline', () => {
+      cloud.status = 'offline';
+      updateCloudBadges();
+      showToast('Sin internet: tus series se seguirán guardando localmente.', 'warning');
+    });
+
+    /*************************************************************************
+     * 5. UTILIDADES GENERALES Y CIENCIA DEL ENTRENAMIENTO
+     *************************************************************************/
+    function uid(prefix = 'id') {
+      return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
+    }
+
+    function formatDateShort(iso) {
+      if (!iso) return '—';
+      const [y, m, d] = iso.split('-');
+      const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+      return `${parseInt(d, 10)} ${months[parseInt(m, 10) - 1] || m} ${y}`;
+    }
+
+    function escapeHTML(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function normalizeName(name) {
+      return (name || '').trim().toLowerCase();
+    }
+
+    function roundToInc(val, inc = state.settings.minIncrement) {
+      if (!val || isNaN(val)) return 0;
+      const step = Number(inc) || 2.5;
+      return Math.max(step, Math.round(val / step) * step);
+    }
+
+    // Fórmula de Epley ajustada por RIR: e1RM = Peso * (1 + (Reps + RIR) / 30)
+    function calcE1RM(weight, reps, rir) {
+      const w = parseFloat(weight);
+      const r = parseFloat(reps);
+      const ri = parseFloat(rir);
+      if (isNaN(w) || w <= 0 || isNaN(r) || r <= 0) return 0;
+      const effRir = isNaN(ri) || ri < 0 ? 0 : ri;
+      return Math.round(w * (1 + (r + effRir) / 30) * 10) / 10;
+    }
+
+    function getActiveMacro() {
+      return state.macrocycles.find(m => m.active) || state.macrocycles[0] || null;
+    }
+
+    function getActiveMeso() {
+      const active = state.mesocycles.find(m => m.active);
+      if (active) return active;
+      const macro = getActiveMacro();
+      if (macro) {
+        const child = state.mesocycles.find(m => m.macroId === macro.id);
+        if (child) return child;
+      }
+      return state.mesocycles[0] || null;
+    }
+
+    function isDeloadActive(meso = getActiveMeso()) {
+      return !!(meso && meso.deloadWeek && Number(meso.currentWeek) === Number(meso.deloadWeek));
+    }
+
+    function getSortedWorkouts(list = state.workouts) {
+      return [...list].sort((a, b) => {
+        if (a.date !== b.date) return b.date.localeCompare(a.date);
+        return (b.createdAt || 0) - (a.createdAt || 0);
+      });
+    }
+
+    function getLastExerciseLog(exerciseId, exerciseName) {
+      const sorted = getSortedWorkouts();
+      const targetNorm = normalizeName(exerciseName);
+      for (const wk of sorted) {
+        const found = (wk.exercises || []).find(
+          e => e.exerciseId === exerciseId || normalizeName(e.name) === targetNorm
+        );
+        if (found) {
+          const validSets = (found.sets || []).filter(s => s.completed && parseFloat(s.weight) > 0 && parseFloat(s.reps) > 0);
+          if (validSets.length > 0) return { workout: wk, exercise: found, sets: validSets };
+        }
+      }
+      return null;
+    }
+
+    function getHistoricalRecords(exerciseId, exerciseName) {
+      let maxWeight = 0;
+      let maxE1rm = 0;
+      const targetNorm = normalizeName(exerciseName);
+      for (const wk of state.workouts) {
+        const found = (wk.exercises || []).find(
+          e => e.exerciseId === exerciseId || normalizeName(e.name) === targetNorm
+        );
+        if (!found) continue;
+        for (const s of found.sets || []) {
+          if (!s.completed) continue;
+          const w = parseFloat(s.weight) || 0;
+          const e1 = calcE1RM(w, s.reps, s.rir);
+          if (w > maxWeight) maxWeight = w;
+          if (e1 > maxE1rm) maxE1rm = e1;
+        }
+      }
+      return { maxWeight, maxE1rm };
+    }
+
+    function formatLastSummary(last, unit) {
+      if (!last || !last.sets.length) return 'Sin registro previo';
+      const txt = last.sets.map(s => `${s.weight}${unit} × ${s.reps} @RIR${s.rir}`).join('  |  ');
+      return `Anterior (${formatDateShort(last.workout.date)}): ${txt}`;
+    }
+
+    function getDoubleProgressionAdvice(exConfig, meso = getActiveMeso()) {
+      const unit = state.settings.unit;
+      const inc = Number(state.settings.minIncrement) || 2.5;
+      const last = getLastExerciseLog(exConfig.id, exConfig.name);
+
+      if (isDeloadActive(meso)) {
+        if (last) {
+          const topWeight = Math.max(...last.sets.map(s => parseFloat(s.weight) || 0));
+          const deloadW = roundToInc(topWeight * 0.8, inc);
+          return {
+            type: 'deload',
+            badge: `⚡ DESCARGA: ~${deloadW} ${unit} (-20%) · RIR 3-4`,
+            detail: `Semana ${meso.currentWeek} de descarga activa. Reduce fatiga del SNC.`,
+            suggestedWeight: deloadW,
+            lastSummary: formatLastSummary(last, unit)
+          };
+        }
+        return {
+          type: 'deload',
+          badge: `⚡ SEMANA DE DESCARGA · -20% carga · RIR 3-4`,
+          detail: 'Semana de descarga activa.',
+          suggestedWeight: null,
+          lastSummary: 'Sin historial previo'
+        };
+      }
+
+      if (!last) {
+        return {
+          type: 'new',
+          badge: `🆕 BASELINE: Busca ${exConfig.repMin}-${exConfig.repMax} reps @ RIR ${exConfig.rirTarget}`,
+          detail: 'Primera sesión registrada. Prioriza técnica y control excéntrico.',
+          suggestedWeight: null,
+          lastSummary: 'Sin registro previo'
+        };
+      }
+
+      const topWeight = Math.max(...last.sets.map(s => parseFloat(s.weight) || 0));
+      const allHitTop = last.sets.every(s => (parseFloat(s.reps) || 0) >= Number(exConfig.repMax));
+
+      if (allHitTop) {
+        const pctAdd = roundToInc(topWeight * 1.035, inc);
+        const suggested = Math.max(topWeight + inc, pctAdd);
+        const diff = Math.round((suggested - topWeight) * 100) / 100;
+        return {
+          type: 'up',
+          badge: `🚀 SUBIR CARGA: ${suggested} ${unit} (+${diff} ${unit})`,
+          detail: `Completaste ${exConfig.repMax} reps en todas las series previas. Sube peso.`,
+          suggestedWeight: suggested,
+          lastSummary: formatLastSummary(last, unit)
+        };
+      } else {
+        const minReps = Math.min(...last.sets.map(s => parseFloat(s.reps) || 0));
+        const nextGoal = Math.min(Number(exConfig.repMax), minReps + 1);
+        return {
+          type: 'reps',
+          badge: `📈 MANTENER ${topWeight} ${unit}: Busca +1 rep (meta ${nextGoal}-${exConfig.repMax})`,
+          detail: `Consolida ${topWeight} ${unit} hasta lograr ${exConfig.repMax} reps en ambas series.`,
+          suggestedWeight: topWeight,
+          lastSummary: formatLastSummary(last, unit)
+        };
+      }
+    }
+
+    function computeMuscleVolume(workoutsList, mode = 'last7days') {
+      const counts = {};
+      if (!workoutsList.length) return counts;
+
+      if (mode === 'weeklyAvg') {
+        const weeksSet = new Set();
+        for (const wk of workoutsList) {
+          const d = new Date(wk.date + 'T12:00:00');
+          const jan1 = new Date(d.getFullYear(), 0, 1);
+          const weekKey = `${d.getFullYear()}-W${Math.ceil((((d - jan1) / 86400000) + jan1.getDay() + 1) / 7)}`;
+          weeksSet.add(weekKey);
+          for (const ex of wk.exercises || []) {
+            const m = ex.muscle || 'Otros';
+            counts[m] = (counts[m] || 0) + (ex.sets || []).filter(s => s.completed).length;
+          }
+        }
+        const numWeeks = Math.max(1, weeksSet.size);
+        for (const k of Object.keys(counts)) counts[k] = Math.round((counts[k] / numWeeks) * 10) / 10;
+        return counts;
+      }
+
+      const sorted = getSortedWorkouts(workoutsList);
+      const latestDate = sorted[0].date;
+      const cutoff = addDaysISO(latestDate, -6);
+      const subset = sorted.filter(w => w.date >= cutoff && w.date <= latestDate);
+
+      for (const wk of subset) {
+        for (const ex of wk.exercises || []) {
+          const m = ex.muscle || 'Otros';
+          counts[m] = (counts[m] || 0) + (ex.sets || []).filter(s => s.completed).length;
+        }
+      }
+      return counts;
+    }
+
+    function computeHallOfFame(workoutsList = state.workouts) {
+      const chronological = [...workoutsList].sort((a, b) => a.date.localeCompare(b.date));
+      const map = new Map();
+
+      for (const wk of chronological) {
+        for (const ex of wk.exercises || []) {
+          const key = normalizeName(ex.name);
+          const validSets = (ex.sets || []).filter(s => s.completed && parseFloat(s.weight) > 0 && parseFloat(s.reps) > 0);
+          if (!validSets.length) continue;
+
+          const sessionMaxW = Math.max(...validSets.map(s => parseFloat(s.weight)));
+          let bestSet = validSets[0];
+          let sessionMaxE1 = 0;
+
+          for (const s of validSets) {
+            const e1 = calcE1RM(s.weight, s.reps, s.rir);
+            if (e1 > sessionMaxE1) {
+              sessionMaxE1 = e1;
+              bestSet = s;
+            }
+          }
+
+          if (!map.has(key)) {
+            map.set(key, {
+              name: ex.name,
+              muscle: ex.muscle || 'Otros',
+              firstE1rm: sessionMaxE1,
+              maxWeight: sessionMaxW,
+              maxWeightDate: wk.date,
+              maxE1rm: sessionMaxE1,
+              maxE1rmDate: wk.date,
+              bestSet,
+              sessionsCount: 1
+            });
+          } else {
+            const rec = map.get(key);
+            rec.sessionsCount += 1;
+            if (sessionMaxW > rec.maxWeight) {
+              rec.maxWeight = sessionMaxW;
+              rec.maxWeightDate = wk.date;
+            }
+            if (sessionMaxE1 > rec.maxE1rm) {
+              rec.maxE1rm = sessionMaxE1;
+              rec.maxE1rmDate = wk.date;
+              rec.bestSet = bestSet;
+            }
+          }
+        }
+      }
+
+      return Array.from(map.values())
+        .map(item => ({
+          ...item,
+          improvementPct: item.firstE1rm > 0
+            ? Math.round(((item.maxE1rm - item.firstE1rm) / item.firstE1rm) * 1000) / 10
+            : 0
+        }))
+        .sort((a, b) => b.maxE1rm - a.maxE1rm);
+    }
+
+    function countTotalPRs() {
+      let total = 0;
+      for (const wk of state.workouts) {
+        for (const ex of wk.exercises || []) {
+          for (const s of ex.sets || []) {
+            if (s.completed && (s.isWeightPR || s.isE1rmPR)) total++;
+          }
+        }
+      }
+      return total;
+    }
+
+    function getLatestBodyweight() {
+      for (const wk of getSortedWorkouts()) {
+        if (wk.bodyweight && !isNaN(parseFloat(wk.bodyweight))) {
+          return { value: parseFloat(wk.bodyweight), date: wk.date };
+        }
+      }
+      return null;
+    }
+
+    /*************************************************************************
+     * 6. DATOS DEMO (6 SEMANAS REALISTAS)
+     *************************************************************************/
+    function loadDemoData() {
+      const today = getTodayISO();
+      const startDate = addDaysISO(today, -41);
+      const baseWeights = {
+        'ex_ta_1': 50, 'ex_ta_2': 55, 'ex_ta_3': 45, 'ex_ta_4': 10, 'ex_ta_5': 22.5, 'ex_ta_6': 20,
+        'ex_pa_1': 80, 'ex_pa_2': 45, 'ex_pa_3': 70, 'ex_pa_4': 50, 'ex_pa_5': 70, 'ex_pa_6': 35,
+        'ex_tb_1': 55, 'ex_tb_2': 30, 'ex_tb_3': 45, 'ex_tb_4': 30, 'ex_tb_5': 10, 'ex_tb_6': 25, 'ex_tb_7': 25,
+        'ex_pb_1': 90, 'ex_pb_2': 30, 'ex_pb_3': 40, 'ex_pb_4': 50, 'ex_pb_5': 55, 'ex_pb_6': 70, 'ex_pb_7': 10
+      };
+
+      const routine = getDefaultRoutine();
+      const macroId = 'macro_demo_1';
+      const mesoId = 'meso_demo_1';
+      const workouts = [];
+      const tracker = {};
+      const records = {};
+      const dayOffsets = [0, 1, 3, 4];
+
+      for (let week = 1; week <= 6; week++) {
+        const isDeload = week === 6;
+        for (let dIdx = 0; dIdx < 4; dIdx++) {
+          const day = routine[dIdx];
+          const wkDate = addDaysISO(startDate, (week - 1) * 7 + dayOffsets[dIdx]);
+          const bw = Math.round((74.0 + ((week - 1) * 4 + dIdx) * 0.08 + Math.sin(week + dIdx) * 0.15) * 10) / 10;
+
+          const exercisesLog = day.exercises.map(ex => {
+            if (!tracker[ex.id]) {
+              tracker[ex.id] = { weight: baseWeights[ex.id] || 40, r1: ex.repMin, r2: ex.repMin };
+            }
+            const cur = tracker[ex.id];
+            const inc = cur.weight >= 60 ? 5 : (cur.weight <= 15 ? 1.25 : 2.5);
+
+            if (week > 1 && !isDeload) {
+              if (cur.r1 >= ex.repMax && cur.r2 >= ex.repMax) {
+                cur.weight = Math.round((cur.weight + inc) * 100) / 100;
+                cur.r1 = ex.repMin + (week % 2 === 0 ? 1 : 0);
+                cur.r2 = ex.repMin;
+              } else {
+                cur.r1 = Math.min(ex.repMax, cur.r1 + 1);
+                cur.r2 = Math.min(ex.repMax, cur.r2 + 1);
+              }
+            }
+
+            const key = normalizeName(ex.name);
+            if (!records[key]) records[key] = { maxW: 0, maxE1: 0 };
+            const sets = [];
+
+            for (let sIdx = 0; sIdx < ex.sets; sIdx++) {
+              const w = isDeload ? roundToInc(cur.weight * 0.8, 2.5) : cur.weight;
+              const r = isDeload ? ex.repMin : (sIdx === 0 ? cur.r1 : cur.r2);
+              const rir = isDeload ? 3 : (week <= 2 ? 2 : (week <= 4 ? 1 : 0));
+              const e1 = calcE1RM(w, r, rir);
+              const isWPR = week > 1 && !isDeload && w > records[key].maxW;
+              const isE1PR = week > 1 && !isDeload && e1 > records[key].maxE1;
+
+              if (w > records[key].maxW) records[key].maxW = w;
+              if (e1 > records[key].maxE1) records[key].maxE1 = e1;
+
+              sets.push({ weight: w, reps: r, rir, e1rm: e1, completed: true, isWeightPR: isWPR, isE1rmPR: isE1PR });
+            }
+
+            return { exerciseId: ex.id, name: ex.name, muscle: ex.muscle, notes: '', sets };
+          });
+
+          workouts.push({
+            id: uid('wk_demo'),
+            createdAt: Date.now() - (42 - ((week - 1) * 7 + dayOffsets[dIdx])) * 86400000,
+            date: wkDate,
+            dayId: day.id,
+            dayName: day.name,
+            macroId,
+            mesoId,
+            weekNumber: week,
+            bodyweight: bw,
+            sleepHours: 7.5,
+            energy: isDeload ? 5 : 4,
+            notes: isDeload ? 'Descarga controlada (Deload).' : `Semana ${week} — Progresión sólida.`,
+            exercises: exercisesLog
+          });
+        }
+      }
+
+      state.routine = routine;
+      state.hasDemoData = true;
+      state.macrocycles = [{
+        id: macroId,
+        name: 'Macrociclo Demo — Hipertrofia 2026',
+        goal: 'Hipertrofia',
+        startDate,
+        endDate: addDaysISO(startDate, 180),
+        notes: 'Bloque de 6 meses con estructura Torso-Pierna 2 series efectivas.',
+        active: true
+      }];
+      state.mesocycles = [{
+        id: mesoId,
+        macroId,
+        name: 'Mesociclo 1: Acumulación y Doble Progresión',
+        weeks: 6,
+        deloadWeek: 6,
+        rirProgression: 'RIR 2 → RIR 0-1',
+        currentWeek: 6,
+        active: true,
+        notes: 'Semanas 1-5 sobrecarga progresiva. Semana 6 descarga planificada.'
+      }];
+      state.workouts = workouts;
+      state.activeDraft = null;
+      saveState();
+      destroyAllCharts();
+      renderApp();
+      showToast('Datos Demo (6 semanas · 24 sesiones) cargados con éxito.', 'success');
+    }
+
+    function clearDemoOrAllData() {
+      openConfirmModal(
+        'Limpiar todos los datos',
+        'Se borrarán todas las sesiones demo o registradas y volverás a empezar en blanco con la rutina Torso-Pierna base.',
+        'Sí, limpiar',
+        () => {
+          const prevSettings = { ...state.settings };
+          state = getDefaultState();
+          state.settings = prevSettings;
+          saveState();
+          destroyAllCharts();
+          renderApp();
+          showToast('Datos limpiados. Listo para tu primer entrenamiento real.', 'info');
+        }
+      );
+    }
+
+    /*************************************************************************
+     * 7. NAVEGACIÓN PRINCIPAL
+     *************************************************************************/
+    const DESKTOP_NAV_ITEMS = [
+      { id: 'dashboard', label: 'Dashboard', icon: 'layout-dashboard' },
+      { id: 'workout', label: 'Entrenar', icon: 'play-circle' },
+      { id: 'cycles', label: 'Macro / Mesociclos', icon: 'calendar-range' },
+      { id: 'analytics', label: 'Analíticas y PRs', icon: 'bar-chart-3' },
+      { id: 'routine', label: 'Editor de Rutina', icon: 'sliders-horizontal' },
+      { id: 'history', label: 'Historial', icon: 'history' },
+      { id: 'cloud', label: 'Nube y Respaldo', icon: 'cloud' }
+    ];
+
+    const MOBILE_NAV_ITEMS = [
+      { id: 'dashboard', label: 'Inicio', icon: 'layout-dashboard' },
+      { id: 'workout', label: 'Entrenar', icon: 'play-circle' },
+      { id: 'cycles', label: 'Ciclos', icon: 'calendar-range' },
+      { id: 'analytics', label: 'Gráficos', icon: 'bar-chart-3' },
+      { id: 'hub', label: 'Rutina/Nube', icon: 'sliders-horizontal' }
+    ];
+
+    function navigateTo(tabId) {
+      if (tabId === 'hub') {
+        currentTab = uiFilters.hubSubtab === 'cloud' ? 'cloud' : 'routine';
+      } else {
+        currentTab = tabId;
+        if (tabId === 'routine' || tabId === 'cloud') uiFilters.hubSubtab = tabId;
+      }
+      destroyAllCharts();
+      renderApp();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function destroyAllCharts() {
+      for (const k of Object.keys(charts)) {
+        try { charts[k].destroy(); } catch (e) {}
+        delete charts[k];
+      }
+    }
+
+    function renderNavigation() {
+      const desktopNav = document.getElementById('desktop-nav');
+      const mobileNav = document.getElementById('mobile-nav');
+      const sidebarCycle = document.getElementById('sidebar-cycle-card');
+      const mobileHeaderCycle = document.getElementById('mobile-header-cycle');
+
+      desktopNav.innerHTML = DESKTOP_NAV_ITEMS.map(item => {
+        const active = currentTab === item.id;
+        return `
+          <button onclick="navigateTo('${item.id}')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+            active
+              ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm'
+              : 'text-slate-400 hover:text-slate-100 hover:bg-[#131A26] border border-transparent'
+          }">
+            <i data-lucide="${item.icon}" class="w-4 h-4 shrink-0 ${active ? 'text-emerald-400' : ''}"></i>
+            <span class="truncate">${item.label}</span>
+            ${item.id === 'workout' && state.activeDraft ? '<span class="ml-auto w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>' : ''}
+          </button>
+        `;
+      }).join('');
+
+      mobileNav.innerHTML = MOBILE_NAV_ITEMS.map(item => {
+        const active = item.id === 'hub'
+          ? (currentTab === 'routine' || currentTab === 'cloud')
+          : currentTab === item.id;
+        return `
+          <button onclick="navigateTo('${item.id}')" class="relative flex flex-col items-center justify-center gap-0.5 py-1.5 px-2 rounded-xl min-w-[60px] transition ${
+            active ? 'text-emerald-400 bg-emerald-500/10' : 'text-slate-400 hover:text-slate-200'
+          }">
+            <i data-lucide="${item.icon}" class="w-5 h-5"></i>
+            <span class="text-[10px] font-bold tracking-tight">${item.label}</span>
+            ${item.id === 'workout' && state.activeDraft ? '<span class="absolute top-1.5 right-3 w-2 h-2 rounded-full bg-emerald-400"></span>' : ''}
+          </button>
+        `;
+      }).join('');
+
+      const meso = getActiveMeso();
+      const macro = getActiveMacro();
+      if (meso) {
+        const pct = Math.min(100, Math.round((meso.currentWeek / Math.max(1, meso.weeks)) * 100));
+        const deload = isDeloadActive(meso);
+        sidebarCycle.innerHTML = `
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-[10px] uppercase tracking-wider font-bold ${deload ? 'text-amber-400' : 'text-emerald-400'}">
+              ${deload ? '⚡ Descarga Activa' : '● Mesociclo Activo'}
+            </span>
+            <span class="text-xs font-bold tabular-nums text-slate-300">Sem ${meso.currentWeek}/${meso.weeks}</span>
+          </div>
+          <div class="text-xs font-bold text-white truncate">${escapeHTML(meso.name)}</div>
+          <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+            <div class="h-full ${deload ? 'bg-amber-400' : 'bg-gradient-to-r from-emerald-400 to-cyan-400'}" style="width:${pct}%"></div>
+          </div>
+          <div class="text-[11px] text-slate-400 truncate">${macro ? escapeHTML(macro.goal) : 'Hipertrofia'} · ${escapeHTML(meso.rirProgression || 'RIR progresivo')}</div>
+        `;
+        mobileHeaderCycle.textContent = `Sem ${meso.currentWeek}/${meso.weeks}${deload ? ' · DESCARGA' : ''} · ${meso.name}`;
+      } else {
+        sidebarCycle.innerHTML = `<div class="text-xs text-slate-400">Sin mesociclo activo</div>`;
+        mobileHeaderCycle.textContent = 'Torso-Pierna Pro';
+      }
+
+      updateCloudBadges();
+    }
+
+    function renderMobileHubSwitcher() {
+      return `
+        <div class="lg:hidden grid grid-cols-2 gap-2 p-1 rounded-2xl bg-[#131A26] border border-slate-800">
+          <button onclick="navigateTo('routine')" class="py-2 rounded-xl text-xs font-extrabold transition ${
+            currentTab === 'routine' ? 'bg-emerald-500 text-[#0B0F17]' : 'text-slate-400'
+          }">Editor de Rutina</button>
+          <button onclick="navigateTo('cloud')" class="py-2 rounded-xl text-xs font-extrabold transition ${
+            currentTab === 'cloud' ? 'bg-cyan-500 text-[#0B0F17]' : 'text-slate-400'
+          }">Cuenta, Nube y BD</button>
+        </div>
+      `;
+    }
+
+    function renderApp() {
+      renderNavigation();
+      const view = document.getElementById('app-view');
+
+      if (currentTab === 'dashboard') renderDashboard(view);
+      else if (currentTab === 'workout') renderWorkoutLogger(view);
+      else if (currentTab === 'cycles') renderCycles(view);
+      else if (currentTab === 'analytics') renderAnalytics(view);
+      else if (currentTab === 'routine') renderRoutineEditor(view);
+      else if (currentTab === 'history') renderHistory(view);
+      else if (currentTab === 'cloud') renderCloudCenter(view);
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    /*************************************************************************
+     * 8. VISTA 1: PANEL DE CONTROL (DASHBOARD)
+     *************************************************************************/
+    function renderDashboard(container) {
+      const unit = state.settings.unit;
+      const totalSessions = state.workouts.length;
+      const weeklyVolMap = computeMuscleVolume(state.workouts, 'last7days');
+      const weeklySets = Object.values(weeklyVolMap).reduce((a, b) => a + b, 0);
+      const totalPRs = countTotalPRs();
+      const latestBW = getLatestBodyweight();
+      const meso = getActiveMeso();
+      const macro = getActiveMacro();
+      const recentWorkouts = getSortedWorkouts().slice(0, 5);
+
+      let nextDay = state.routine[0];
+      if (recentWorkouts.length > 0 && state.routine.length > 0) {
+        const lastIdx = state.routine.findIndex(d => d.id === recentWorkouts[0].dayId);
+        if (lastIdx >= 0) nextDay = state.routine[(lastIdx + 1) % state.routine.length];
+      }
+
+      const mesoPct = meso ? Math.min(100, Math.round((meso.currentWeek / Math.max(1, meso.weeks)) * 100)) : 0;
+      const deload = isDeloadActive(meso);
+
+      container.innerHTML = `
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Panel de Control</h2>
+            <p class="text-sm text-slate-400 mt-0.5">Resumen de hipertrofia, volumen semanal y progresión en la nube.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            ${totalSessions === 0 ? `
+              <button onclick="loadDemoData()" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/35 text-amber-300 text-xs sm:text-sm font-bold transition active:scale-95">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                Cargar Datos Demo (6 sem)
+              </button>
+            ` : `
+              <button onclick="clearDemoOrAllData()" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-[#131A26] hover:bg-[#192233] border border-slate-700/80 text-slate-300 text-xs font-bold transition active:scale-95">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                ${state.hasDemoData ? 'Limpiar Datos Demo' : 'Reiniciar Datos'}
+              </button>
+            `}
+            <button onclick="startSuggestedWorkout('${nextDay ? nextDay.id : ''}')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-[#0B0F17] text-xs sm:text-sm font-extrabold shadow-lg shadow-emerald-500/20 transition active:scale-95">
+              <i data-lucide="play" class="w-4 h-4 fill-[#0B0F17]"></i>
+              ${state.activeDraft ? 'Continuar Sesión' : `Entrenar ${nextDay ? escapeHTML(nextDay.name) : ''}`}
+            </button>
+          </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div class="p-4 sm:p-5 rounded-2xl bg-[#131A26] border border-slate-800/90 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Sesiones</span>
+              <span class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400"><i data-lucide="check-circle-2" class="w-4 h-4"></i></span>
+            </div>
+            <div class="mt-3">
+              <div class="text-2xl sm:text-3xl font-extrabold tabular-nums text-white">${totalSessions}</div>
+              <div class="text-xs text-slate-400 mt-0.5">${totalSessions > 0 ? `Última: ${formatDateShort(recentWorkouts[0].date)}` : 'Sin sesiones aún'}</div>
+            </div>
+          </div>
+
+          <div class="p-4 sm:p-5 rounded-2xl bg-[#131A26] border border-slate-800/90 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Volumen Semanal</span>
+              <span class="p-2 rounded-lg bg-cyan-500/10 text-cyan-400"><i data-lucide="layers" class="w-4 h-4"></i></span>
+            </div>
+            <div class="mt-3">
+              <div class="text-2xl sm:text-3xl font-extrabold tabular-nums text-white">${weeklySets} <span class="text-xs font-semibold text-slate-400">series</span></div>
+              <div class="text-xs text-slate-400 mt-0.5">Últimos 7 días activos</div>
+            </div>
+          </div>
+
+          <div class="p-4 sm:p-5 rounded-2xl bg-[#131A26] border border-slate-800/90 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">PRs Logrados</span>
+              <span class="p-2 rounded-lg bg-amber-500/10 text-amber-400"><i data-lucide="trophy" class="w-4 h-4"></i></span>
+            </div>
+            <div class="mt-3">
+              <div class="text-2xl sm:text-3xl font-extrabold tabular-nums text-amber-300">${totalPRs}</div>
+              <div class="text-xs text-slate-400 mt-0.5">Récords Carga / e1RM</div>
+            </div>
+          </div>
+
+          <div class="p-4 sm:p-5 rounded-2xl bg-[#131A26] border border-slate-800/90 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Peso Corporal</span>
+              <span class="p-2 rounded-lg bg-violet-500/10 text-violet-400"><i data-lucide="scale" class="w-4 h-4"></i></span>
+            </div>
+            <div class="mt-3">
+              <div class="text-2xl sm:text-3xl font-extrabold tabular-nums text-white">${latestBW ? `${latestBW.value} <span class="text-xs font-semibold text-slate-400">${unit}</span>` : '—'}</div>
+              <div class="text-xs text-slate-400 mt-0.5">${latestBW ? formatDateShort(latestBW.date) : 'Opcional al entrenar'}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta Mesociclo Activo -->
+        <div class="p-5 rounded-2xl bg-gradient-to-br from-[#131A26] to-[#172133] border ${deload ? 'border-amber-500/45' : 'border-slate-800'}">
+          ${meso ? `
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div class="space-y-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${deload ? 'bg-amber-500/20 text-amber-300 border border-amber-500/35' : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'}">
+                    ${deload ? '⚡ Semana de Descarga (-20% carga / RIR 3-4)' : 'Mesociclo Activo'}
+                  </span>
+                  ${macro ? `<span class="text-xs text-slate-400 font-medium">${escapeHTML(macro.name)} (${escapeHTML(macro.goal)})</span>` : ''}
+                </div>
+                <h3 class="text-lg font-extrabold text-white">${escapeHTML(meso.name)}</h3>
+                <p class="text-xs text-slate-400">${escapeHTML(meso.notes || meso.rirProgression)}</p>
+              </div>
+              <div class="w-full md:w-72 shrink-0 space-y-2">
+                <div class="flex items-center justify-between text-xs font-bold">
+                  <span class="text-slate-300">Semana ${meso.currentWeek} de ${meso.weeks}</span>
+                  <span class="${deload ? 'text-amber-300' : 'text-emerald-400'} tabular-nums">${mesoPct}%</span>
+                </div>
+                <div class="w-full h-2.5 rounded-full bg-[#0B0F17] overflow-hidden border border-slate-800">
+                  <div class="h-full rounded-full ${deload ? 'bg-amber-400' : 'bg-gradient-to-r from-emerald-400 to-cyan-400'} transition-all" style="width:${mesoPct}%"></div>
+                </div>
+                <div class="flex justify-between items-center pt-1">
+                  <button onclick="navigateTo('cycles')" class="text-xs font-semibold text-cyan-400 hover:text-cyan-300">Ver macro/meso →</button>
+                  <button onclick="advanceActiveMesoWeek()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white transition active:scale-95">Avanzar semana +1</button>
+                </div>
+              </div>
+            </div>
+          ` : `
+            <div class="flex items-center justify-between gap-4">
+              <p class="text-sm text-slate-300">No tienes un mesociclo activo.</p>
+              <button onclick="navigateTo('cycles')" class="px-4 py-2 rounded-xl bg-emerald-500 text-[#0B0F17] text-xs font-extrabold">Configurar</button>
+            </div>
+          `}
+        </div>
+
+        <!-- Gráfico Volumen + Actividad Reciente -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div class="lg:col-span-2 p-5 rounded-2xl bg-[#131A26] border border-slate-800/90">
+            <div class="flex items-center justify-between gap-2 mb-4">
+              <div>
+                <h3 class="text-base font-bold text-white">Series Semanales por Grupo Muscular</h3>
+                <p class="text-xs text-slate-400">Últimos 7 días activos (enfoque 2 series efectivas / frecuencia 2)</p>
+              </div>
+              <button onclick="navigateTo('analytics')" class="text-xs font-semibold text-cyan-400 hover:underline shrink-0">Ver gráficos →</button>
+            </div>
+            ${Object.keys(weeklyVolMap).length > 0 ? `
+              <div class="relative h-64 w-full">
+                <canvas id="chart-dashboard-vol"></canvas>
+              </div>
+            ` : `
+              <div class="h-52 flex flex-col items-center justify-center text-center p-4 rounded-xl bg-[#0B0F17]/70 border border-dashed border-slate-800">
+                <i data-lucide="bar-chart-3" class="w-8 h-8 text-slate-600 mb-2"></i>
+                <p class="text-sm font-semibold text-slate-300">Sin entrenamientos registrados aún</p>
+                <p class="text-xs text-slate-500 mt-1 max-w-sm">Inicia tu primera sesión o pulsa <strong>Cargar Datos Demo (6 sem)</strong> para probar todas las analíticas y PRs.</p>
+              </div>
+            `}
+          </div>
+
+          <div class="p-5 rounded-2xl bg-[#131A26] border border-slate-800/90 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-base font-bold text-white">Actividad Reciente</h3>
+              <button onclick="navigateTo('history')" class="text-xs font-semibold text-cyan-400 hover:underline">Historial</button>
+            </div>
+            <div class="space-y-2.5 flex-1">
+              ${recentWorkouts.length > 0 ? recentWorkouts.map(wk => {
+                const setsCount = wk.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed).length, 0);
+                const tonnage = Math.round(wk.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed).reduce((x, s) => x + s.weight * s.reps, 0), 0));
+                const prs = wk.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed && (s.isWeightPR || s.isE1rmPR)).length, 0);
+                return `
+                  <div onclick="openHistoryItem('${wk.id}')" class="p-3 rounded-xl bg-[#0B0F17]/80 hover:bg-[#192233] border border-slate-800/80 cursor-pointer transition">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-sm font-bold text-white truncate">${escapeHTML(wk.dayName)}</span>
+                      <span class="text-[11px] text-slate-400 shrink-0">${formatDateShort(wk.date)}</span>
+                    </div>
+                    <div class="flex items-center gap-2.5 mt-1.5 text-xs text-slate-400 tabular-nums">
+                      <span>${setsCount} series</span>
+                      <span>·</span>
+                      <span>${tonnage.toLocaleString()} ${unit}</span>
+                      ${prs > 0 ? `<span class="ml-auto px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold text-[10px]">🏆 ${prs} PR</span>` : ''}
+                    </div>
+                  </div>
+                `;
+              }).join('') : `
+                <div class="h-full min-h-[160px] flex items-center justify-center text-center p-4 rounded-xl bg-[#0B0F17]/60 border border-dashed border-slate-800">
+                  <p class="text-xs text-slate-500">Tus entrenamientos aparecerán aquí.</p>
+                </div>
+              `}
+            </div>
+          </div>
+        </div>
+      `;
+
+      if (Object.keys(weeklyVolMap).length > 0) {
+        const ctx = document.getElementById('chart-dashboard-vol');
+        if (ctx) {
+          const entries = Object.entries(weeklyVolMap).sort((a, b) => b[1] - a[1]);
+          charts.dashVol = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: entries.map(e => e[0]),
+              datasets: [{
+                label: 'Series Efectivas',
+                data: entries.map(e => e[1]),
+                backgroundColor: entries.map(e => e[1] >= 4 ? 'rgba(16, 185, 129, 0.82)' : 'rgba(6, 182, 212, 0.55)'),
+                borderRadius: 6
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false }, tooltip: { backgroundColor: '#0B0F17', borderColor: '#334155', borderWidth: 1 } },
+              scales: {
+                x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } },
+                y: { beginAtZero: true, ticks: { color: '#94a3b8', stepSize: 2 }, grid: { color: 'rgba(51,65,85,0.35)' } }
+              }
+            }
+          });
+        }
+      }
+    }
+
+    function startSuggestedWorkout(dayId) {
+      if (!state.activeDraft && dayId) initWorkoutDraft(dayId);
+      navigateTo('workout');
+    }
+
+    function openHistoryItem(wkId) {
+      uiFilters.expandedHistoryIds.add(wkId);
+      navigateTo('history');
+    }
+
+    /*************************************************************************
+     * 9. VISTA 2: ENTRENADOR EN VIVO (LIVE WORKOUT LOGGER)
+     *************************************************************************/
+    function initWorkoutDraft(dayId = null) {
+      const targetDay = state.routine.find(d => d.id === dayId) || state.routine[0];
+      if (!targetDay) return;
+
+      const macro = getActiveMacro();
+      const meso = getActiveMeso();
+      const latestBW = getLatestBodyweight();
+
+      const exercises = targetDay.exercises.map(ex => {
+        const advice = getDoubleProgressionAdvice(ex, meso);
+        const sets = [];
+        const nSets = Math.max(1, Number(ex.sets) || 2);
+        for (let i = 0; i < nSets; i++) {
+          sets.push({
+            weight: advice.suggestedWeight || '',
+            reps: '',
+            rir: isDeloadActive(meso) ? 3 : (parseInt(String(ex.rirTarget).split('-')[0], 10) || 1),
+            completed: false,
+            isWeightPR: false,
+            isE1rmPR: false
+          });
+        }
+        return {
+          exerciseId: ex.id,
+          name: ex.name,
+          muscle: ex.muscle,
+          repMin: ex.repMin,
+          repMax: ex.repMax,
+          rirTarget: ex.rirTarget,
+          restSec: ex.restSec || 120,
+          biomechNotes: ex.notes || '',
+          sessionNotes: '',
+          sets
+        };
+      });
+
+      state.activeDraft = {
+        date: getTodayISO(),
+        dayId: targetDay.id,
+        dayName: targetDay.name,
+        macroId: macro ? macro.id : null,
+        mesoId: meso ? meso.id : null,
+        weekNumber: meso ? Number(meso.currentWeek) : 1,
+        bodyweight: latestBW ? latestBW.value : '',
+        sleepHours: 7.5,
+        energy: 4,
+        notes: '',
+        exercises
+      };
+      saveState();
+    }
+
+    function renderWorkoutLogger(container) {
+      if (!state.routine.length) {
+        container.innerHTML = `<div class="p-8 rounded-2xl bg-[#131A26] text-center"><p class="text-slate-300">No hay días en tu rutina.</p></div>`;
+        return;
+      }
+      if (!state.activeDraft) initWorkoutDraft(state.routine[0].id);
+
+      const draft = state.activeDraft;
+      const unit = state.settings.unit;
+      const meso = state.mesocycles.find(m => m.id === draft.mesoId) || getActiveMeso();
+      const deload = isDeloadActive(meso);
+      const totalSets = draft.exercises.reduce((a, e) => a + e.sets.length, 0);
+      const completedSets = draft.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed).length, 0);
+      const progressPct = totalSets > 0 ? Math.round((completedSets / totalSets) * 100) : 0;
+
+      container.innerHTML = `
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Live Logger</span>
+              ${meso ? `<span class="text-xs font-semibold ${deload ? 'text-amber-300' : 'text-cyan-400'}">${escapeHTML(meso.name)} · Sem ${draft.weekNumber}${deload ? ' (DELOAD)' : ''}</span>` : ''}
+            </div>
+            <h2 class="text-2xl font-extrabold text-white mt-1">Registrar Entrenamiento</h2>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="confirmResetDraft()" class="px-3.5 py-2.5 rounded-xl bg-[#131A26] hover:bg-slate-800 border border-slate-700 text-slate-300 text-xs font-bold transition">Reiniciar</button>
+            <button onclick="finishAndSaveWorkout()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-[#0B0F17] text-sm font-extrabold shadow-lg shadow-emerald-500/20 transition active:scale-95">
+              <i data-lucide="save" class="w-4 h-4"></i>
+              Finalizar Sesión
+            </button>
+          </div>
+        </div>
+
+        ${deload ? `
+          <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/35 flex items-center gap-3 text-xs text-amber-200">
+            <i data-lucide="zap" class="w-5 h-5 text-amber-400 shrink-0"></i>
+            <span><strong>Semana de Descarga Activa:</strong> El motor sugiere ~80% de tu carga previa (-20%) y trabajar a <strong>RIR 3-4</strong> para disipar fatiga acumulada.</span>
+          </div>
+        ` : ''}
+
+        <!-- Cabecera de sesión -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-[#131A26] border border-slate-800/90 space-y-4">
+          <div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
+            <div class="col-span-2">
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Día de Rutina</label>
+              <select onchange="switchDraftDay(this.value)" class="w-full h-11 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm font-bold text-white focus:outline-none focus:border-emerald-500">
+                ${state.routine.map(d => `<option value="${d.id}" ${d.id === draft.dayId ? 'selected' : ''}>${escapeHTML(d.name)} (${d.exercises.length} ejerc.)</option>`).join('')}
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Fecha</label>
+              <input type="date" value="${draft.date}" onchange="updateDraftMeta('date', this.value)" class="w-full h-11 px-2.5 rounded-xl bg-[#0B0F17] border border-slate-700 text-xs sm:text-sm font-semibold text-white" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Peso Corp. (${unit})</label>
+              <input type="number" step="0.1" inputmode="decimal" placeholder="Opcional" value="${draft.bodyweight}" oninput="updateDraftMeta('bodyweight', this.value)" class="w-full h-11 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm font-semibold text-white tabular-nums" />
+            </div>
+            <div class="col-span-2 lg:col-span-1 flex flex-col justify-end">
+              <div class="flex items-center justify-between text-xs font-bold mb-1.5">
+                <span class="text-slate-400">Progreso</span>
+                <span class="text-emerald-400 tabular-nums">${completedSets}/${totalSets}</span>
+              </div>
+              <div class="w-full h-2.5 rounded-full bg-[#0B0F17] border border-slate-800 overflow-hidden mb-2">
+                <div class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 transition-all" style="width:${progressPct}%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ejercicios -->
+        <div class="space-y-4">
+          ${draft.exercises.map((ex, exIdx) => renderWorkoutExerciseCard(ex, exIdx, meso)).join('')}
+        </div>
+
+        <!-- Notas y Guardado -->
+        <div class="p-5 rounded-2xl bg-[#131A26] border border-slate-800/90 space-y-3">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Notas de la sesión</label>
+          <textarea rows="2" placeholder="Bombeo, fatiga, sensaciones articulares..." oninput="updateDraftMeta('notes', this.value)" class="w-full p-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">${escapeHTML(draft.notes || '')}</textarea>
+          <div class="flex justify-end">
+            <button onclick="finishAndSaveWorkout()" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-[#0B0F17] text-sm font-extrabold shadow-lg shadow-emerald-500/20 transition active:scale-95">
+              <i data-lucide="check-circle" class="w-5 h-5"></i>
+              Guardar Sesión y Sincronizar
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderWorkoutExerciseCard(ex, exIdx, meso) {
+      const unit = state.settings.unit;
+      const inc = state.settings.minIncrement;
+      const advice = getDoubleProgressionAdvice(
+        { id: ex.exerciseId, name: ex.name, repMin: ex.repMin, repMax: ex.repMax, rirTarget: ex.rirTarget },
+        meso
+      );
+      const isWarmupOpen = uiFilters.openWarmupIds.has(exIdx);
+      const baseWarmupW = parseFloat(ex.sets[0]?.weight) || advice.suggestedWeight || 0;
+
+      let badgeStyle = 'bg-slate-800/80 text-slate-200 border-slate-700';
+      if (advice.type === 'up') badgeStyle = 'bg-emerald-500/15 text-emerald-300 border-emerald-500/35';
+      else if (advice.type === 'reps') badgeStyle = 'bg-cyan-500/15 text-cyan-300 border-cyan-500/35';
+      else if (advice.type === 'deload') badgeStyle = 'bg-amber-500/15 text-amber-300 border-amber-500/35';
+
+      return `
+        <div class="rounded-2xl bg-[#131A26] border border-slate-800/90 overflow-hidden shadow-sm">
+          <div class="p-4 sm:p-5 border-b border-slate-800/70 space-y-2.5">
+            <div class="flex flex-wrap items-start justify-between gap-2">
+              <div class="space-y-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 text-[11px] font-bold">${escapeHTML(ex.muscle)}</span>
+                  <span class="text-[11px] font-semibold text-slate-400">${ex.repMin}-${ex.repMax} reps · RIR ${escapeHTML(ex.rirTarget)} · ${ex.restSec}s</span>
+                </div>
+                <h3 class="text-base sm:text-lg font-extrabold text-white leading-snug">${exIdx + 1}. ${escapeHTML(ex.name)}</h3>
+              </div>
+              <button onclick="toggleWarmup(${exIdx})" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0B0F17] hover:bg-slate-800 border border-slate-800 text-xs font-bold text-amber-300 transition shrink-0">
+                <i data-lucide="flame" class="w-3.5 h-3.5"></i>
+                Aproximación
+                <i data-lucide="${isWarmupOpen ? 'chevron-up' : 'chevron-down'}" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+
+            ${ex.biomechNotes ? `
+              <div class="flex items-start gap-2 text-xs text-slate-300 bg-[#0B0F17]/75 px-3 py-2 rounded-xl border border-slate-800/80">
+                <i data-lucide="info" class="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5"></i>
+                <span>${escapeHTML(ex.biomechNotes)}</span>
+              </div>
+            ` : ''}
+
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-0.5">
+              <div class="text-xs text-slate-400 font-medium tabular-nums">${escapeHTML(advice.lastSummary)}</div>
+              <div class="inline-flex items-center px-3 py-1.5 rounded-xl border text-xs font-bold ${badgeStyle}">
+                ${escapeHTML(advice.badge)}
+              </div>
+            </div>
+
+            ${isWarmupOpen ? `
+              <div class="mt-2 p-3.5 rounded-xl bg-amber-500/5 border border-amber-500/25 space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-extrabold text-amber-300 uppercase tracking-wider">Calculadora de Series de Aproximación</span>
+                  <span class="text-[11px] text-slate-400 tabular-nums">Objetivo: ${baseWarmupW > 0 ? `${baseWarmupW} ${unit}` : 'Ingresa peso en S1'}</span>
+                </div>
+                ${baseWarmupW > 0 ? `
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                    <div class="p-2.5 rounded-lg bg-[#0B0F17] border border-slate-800 flex items-center justify-between">
+                      <span class="text-slate-400">50% × 6-8 reps</span>
+                      <span class="font-extrabold text-white tabular-nums">${roundToInc(baseWarmupW * 0.5, inc)} ${unit}</span>
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-[#0B0F17] border border-slate-800 flex items-center justify-between">
+                      <span class="text-slate-400">75% × 3-4 reps</span>
+                      <span class="font-extrabold text-white tabular-nums">${roundToInc(baseWarmupW * 0.75, inc)} ${unit}</span>
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-[#0B0F17] border border-slate-800 flex items-center justify-between">
+                      <span class="text-slate-400">90% × 1-2 reps</span>
+                      <span class="font-extrabold text-white tabular-nums">${roundToInc(baseWarmupW * 0.9, inc)} ${unit}</span>
+                    </div>
+                  </div>
+                ` : `<p class="text-xs text-slate-400">Escribe el peso en la Serie 1 para calcular las cargas de aproximación.</p>`}
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="p-4 sm:p-5 space-y-2.5">
+            <div class="grid grid-cols-12 gap-2 px-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              <div class="col-span-1 text-center">#</div>
+              <div class="col-span-3">Peso (${unit})</div>
+              <div class="col-span-2">Reps</div>
+              <div class="col-span-2">RIR</div>
+              <div class="col-span-2 text-center hidden sm:block">e1RM / Vol</div>
+              <div class="col-span-4 sm:col-span-2 text-right">Hecho</div>
+            </div>
+
+            ${ex.sets.map((s, sIdx) => {
+              const e1rm = calcE1RM(s.weight, s.reps, s.rir);
+              const vol = Math.round((parseFloat(s.weight) || 0) * (parseFloat(s.reps) || 0));
+              const isPR = s.completed && (s.isWeightPR || s.isE1rmPR);
+              return `
+                <div class="grid grid-cols-12 gap-2 items-center p-2 rounded-xl border transition ${
+                  s.completed
+                    ? (isPR ? 'bg-amber-500/10 border-amber-400/50' : 'bg-emerald-500/10 border-emerald-500/35')
+                    : 'bg-[#0B0F17]/80 border-slate-800/80'
+                }">
+                  <div class="col-span-1 text-center font-extrabold text-xs ${s.completed ? 'text-emerald-300' : 'text-slate-400'}">S${sIdx + 1}</div>
+                  <div class="col-span-3">
+                    <input type="number" step="0.5" min="0" inputmode="decimal" placeholder="0" value="${s.weight}"
+                      oninput="updateSetField(${exIdx}, ${sIdx}, 'weight', this.value)"
+                      class="w-full h-11 px-2 rounded-xl bg-[#131A26] border border-slate-700 text-sm font-bold text-white tabular-nums text-center focus:outline-none focus:border-emerald-500" />
+                  </div>
+                  <div class="col-span-2">
+                    <input type="number" step="1" min="0" inputmode="numeric" placeholder="${ex.repMin}-${ex.repMax}" value="${s.reps}"
+                      oninput="updateSetField(${exIdx}, ${sIdx}, 'reps', this.value)"
+                      class="w-full h-11 px-1 rounded-xl bg-[#131A26] border border-slate-700 text-sm font-bold text-white tabular-nums text-center focus:outline-none focus:border-emerald-500" />
+                  </div>
+                  <div class="col-span-2">
+                    <select onchange="updateSetField(${exIdx}, ${sIdx}, 'rir', this.value)"
+                      class="w-full h-11 px-1 rounded-xl bg-[#131A26] border border-slate-700 text-sm font-bold text-cyan-300 text-center focus:outline-none focus:border-emerald-500">
+                      ${[0, 1, 2, 3, 4, 5].map(r => `<option value="${r}" ${Number(s.rir) === r ? 'selected' : ''}>${r}</option>`).join('')}
+                    </select>
+                  </div>
+                  <div id="set-stats-${exIdx}-${sIdx}" class="col-span-2 text-center hidden sm:block leading-tight">
+                    <div class="text-xs font-extrabold text-slate-200 tabular-nums">${e1rm > 0 ? `${e1rm} ${unit}` : '—'}</div>
+                    <div class="text-[10px] text-slate-500 tabular-nums">${vol > 0 ? `${vol} ${unit}` : 'e1RM'}</div>
+                  </div>
+                  <div class="col-span-4 sm:col-span-2 flex items-center justify-end gap-1.5">
+                    ${isPR ? `<span class="px-1.5 py-0.5 rounded-md bg-amber-500/25 border border-amber-400/40 text-amber-300 text-[10px] font-extrabold">🏆 PR</span>` : ''}
+                    <button onclick="toggleSetComplete(${exIdx}, ${sIdx})" class="h-11 w-11 rounded-xl flex items-center justify-center transition active:scale-90 ${
+                      s.completed
+                        ? 'bg-emerald-500 text-[#0B0F17] shadow-md shadow-emerald-500/30'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                    }">
+                      <i data-lucide="check" class="w-5 h-5 stroke-[3]"></i>
+                    </button>
+                  </div>
+                  <div id="set-stats-mob-${exIdx}-${sIdx}" class="col-span-12 sm:hidden flex items-center justify-between px-1 pt-0.5 text-[11px] text-slate-400 tabular-nums">
+                    <span>e1RM (RIR): <strong class="text-slate-200">${e1rm > 0 ? `${e1rm} ${unit}` : '—'}</strong></span>
+                    <span>Volumen: <strong class="text-slate-200">${vol > 0 ? `${vol} ${unit}` : '—'}</strong></span>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1.5">
+              <div class="flex items-center gap-1.5">
+                <button onclick="addDraftSet(${exIdx})" class="px-2.5 py-1.5 rounded-lg bg-[#0B0F17] hover:bg-slate-800 border border-slate-800 text-xs font-bold text-emerald-400 inline-flex items-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i> Serie</button>
+                ${ex.sets.length > 1 ? `<button onclick="removeDraftSet(${exIdx})" class="px-2.5 py-1.5 rounded-lg bg-[#0B0F17] hover:bg-rose-500/15 border border-slate-800 text-xs font-bold text-slate-400 hover:text-rose-300 inline-flex items-center gap-1"><i data-lucide="minus" class="w-3.5 h-3.5"></i></button>` : ''}
+                <button onclick="startRestTimer(${ex.restSec}, '${escapeHTML(ex.name).replace(/'/g, "\\'")}')" class="px-2.5 py-1.5 rounded-lg bg-[#0B0F17] hover:bg-slate-800 border border-slate-800 text-xs font-bold text-cyan-300 inline-flex items-center gap-1"><i data-lucide="timer" class="w-3.5 h-3.5"></i> ${ex.restSec}s</button>
+              </div>
+              <input type="text" placeholder="Nota rápida (asiento, agarre)..." value="${escapeHTML(ex.sessionNotes || '')}"
+                oninput="updateExerciseSessionNote(${exIdx}, this.value)"
+                class="flex-1 sm:max-w-xs h-8 px-3 rounded-lg bg-[#0B0F17] border border-slate-800 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500" />
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function switchDraftDay(newDayId) {
+      const hasCompleted = state.activeDraft && state.activeDraft.exercises.some(e => e.sets.some(s => s.completed));
+      if (hasCompleted) {
+        openConfirmModal('Cambiar día', 'Tienes series marcadas como completadas. ¿Descartar y cambiar de día?', 'Cambiar', () => {
+          initWorkoutDraft(newDayId);
+          renderApp();
+        });
+      } else {
+        initWorkoutDraft(newDayId);
+        renderApp();
+      }
+    }
+
+    function updateDraftMeta(field, val) {
+      if (!state.activeDraft) return;
+      state.activeDraft[field] = val;
+      saveState();
+    }
+
+    function updateExerciseSessionNote(exIdx, val) {
+      if (!state.activeDraft) return;
+      state.activeDraft.exercises[exIdx].sessionNotes = val;
+      saveState();
+    }
+
+    function updateSetField(exIdx, sIdx, field, val) {
+      if (!state.activeDraft) return;
+      const setObj = state.activeDraft.exercises[exIdx].sets[sIdx];
+      setObj[field] = val;
+      saveState();
+
+      const unit = state.settings.unit;
+      const e1rm = calcE1RM(setObj.weight, setObj.reps, setObj.rir);
+      const vol = Math.round((parseFloat(setObj.weight) || 0) * (parseFloat(setObj.reps) || 0));
+
+      const deskEl = document.getElementById(`set-stats-${exIdx}-${sIdx}`);
+      if (deskEl) deskEl.innerHTML = `<div class="text-xs font-extrabold text-slate-200 tabular-nums">${e1rm > 0 ? `${e1rm} ${unit}` : '—'}</div><div class="text-[10px] text-slate-500 tabular-nums">${vol > 0 ? `${vol} ${unit}` : 'e1RM'}</div>`;
+      const mobEl = document.getElementById(`set-stats-mob-${exIdx}-${sIdx}`);
+      if (mobEl) mobEl.innerHTML = `<span>e1RM (RIR): <strong class="text-slate-200">${e1rm > 0 ? `${e1rm} ${unit}` : '—'}</strong></span><span>Volumen: <strong class="text-slate-200">${vol > 0 ? `${vol} ${unit}` : '—'}</strong></span>`;
+    }
+
+    function toggleSetComplete(exIdx, sIdx) {
+      if (!state.activeDraft) return;
+      const ex = state.activeDraft.exercises[exIdx];
+      const setObj = ex.sets[sIdx];
+
+      if (!setObj.completed) {
+        const w = parseFloat(setObj.weight);
+        const r = parseFloat(setObj.reps);
+        if (isNaN(w) || w <= 0 || isNaN(r) || r <= 0) {
+          showToast('Ingresa peso y repeticiones válidos antes de marcar la serie.', 'warning');
+          return;
+        }
+        setObj.completed = true;
+        const e1rm = calcE1RM(w, r, setObj.rir);
+        setObj.e1rm = e1rm;
+
+        const hist = getHistoricalRecords(ex.exerciseId, ex.name);
+        const hasHistory = hist.maxWeight > 0 || hist.maxE1rm > 0;
+        setObj.isWeightPR = hasHistory && w > hist.maxWeight;
+        setObj.isE1rmPR = hasHistory && e1rm > hist.maxE1rm;
+
+        if (setObj.isWeightPR || setObj.isE1rmPR) {
+          showToast(`🏆 ¡NUEVO PR en ${ex.name}! (${w}${state.settings.unit} × ${r} · e1RM: ${e1rm}${state.settings.unit})`, 'pr');
+        }
+        startRestTimer(ex.restSec || 120, ex.name);
+      } else {
+        setObj.completed = false;
+        setObj.isWeightPR = false;
+        setObj.isE1rmPR = false;
+      }
+
+      saveState();
+      renderApp();
+    }
+
+    function addDraftSet(exIdx) {
+      const ex = state.activeDraft.exercises[exIdx];
+      const prev = ex.sets[ex.sets.length - 1] || { weight: '', rir: 1 };
+      ex.sets.push({ weight: prev.weight, reps: '', rir: prev.rir, completed: false, isWeightPR: false, isE1rmPR: false });
+      saveState();
+      renderApp();
+    }
+
+    function removeDraftSet(exIdx) {
+      const ex = state.activeDraft.exercises[exIdx];
+      if (ex.sets.length > 1) { ex.sets.pop(); saveState(); renderApp(); }
+    }
+
+    function toggleWarmup(exIdx) {
+      if (uiFilters.openWarmupIds.has(exIdx)) uiFilters.openWarmupIds.delete(exIdx);
+      else uiFilters.openWarmupIds.add(exIdx);
+      renderApp();
+    }
+
+    function confirmResetDraft() {
+      openConfirmModal('Reiniciar sesión', 'Se borrarán las series escritas en este borrador.', 'Reiniciar', () => {
+        initWorkoutDraft(state.activeDraft?.dayId || state.routine[0].id);
+        renderApp();
+      });
+    }
+
+    function finishAndSaveWorkout() {
+      if (!state.activeDraft) return;
+      const draft = state.activeDraft;
+      const completedTotal = draft.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed).length, 0);
+      if (completedTotal === 0) {
+        showToast('Marca al menos una serie completada (✔) antes de guardar.', 'warning');
+        return;
+      }
+
+      const saved = {
+        id: uid('wk'),
+        createdAt: Date.now(),
+        date: draft.date || getTodayISO(),
+        dayId: draft.dayId,
+        dayName: draft.dayName,
+        macroId: draft.macroId,
+        mesoId: draft.mesoId,
+        weekNumber: draft.weekNumber,
+        bodyweight: draft.bodyweight ? parseFloat(draft.bodyweight) : null,
+        sleepHours: draft.sleepHours ? parseFloat(draft.sleepHours) : null,
+        energy: Number(draft.energy) || 4,
+        notes: (draft.notes || '').trim(),
+        exercises: draft.exercises.map(ex => ({
+          exerciseId: ex.exerciseId,
+          name: ex.name,
+          muscle: ex.muscle,
+          notes: (ex.sessionNotes || '').trim(),
+          sets: ex.sets.filter(s => s.completed).map(s => ({
+            weight: parseFloat(s.weight) || 0,
+            reps: parseInt(s.reps, 10) || 0,
+            rir: parseInt(s.rir, 10) || 0,
+            e1rm: calcE1RM(s.weight, s.reps, s.rir),
+            completed: true,
+            isWeightPR: !!s.isWeightPR,
+            isE1rmPR: !!s.isE1rmPR
+          }))
+        })).filter(ex => ex.sets.length > 0)
+      };
+
+      state.workouts.push(saved);
+      state.activeDraft = null;
+      stopRestTimer();
+      saveState();
+      showToast(`¡"${saved.dayName}" guardado (${completedTotal} series)!`, 'success');
+      navigateTo('dashboard');
+    }
+
+    /*************************************************************************
+     * 10. TEMPORIZADOR DE DESCANSO + ALARMA WEB AUDIO API
+     *************************************************************************/
+    function startRestTimer(seconds, label = 'Descanso') {
+      stopRestTimer(false);
+      restTimer.totalSec = Math.max(10, Number(seconds) || 120);
+      restTimer.remainingSec = restTimer.totalSec;
+      restTimer.paused = false;
+      restTimer.label = label;
+
+      document.getElementById('rest-timer-widget')?.classList.remove('hidden');
+      updateRestTimerUI();
+
+      restTimer.intervalId = setInterval(() => {
+        if (restTimer.paused) return;
+        restTimer.remainingSec -= 1;
+        if (restTimer.remainingSec <= 0) {
+          restTimer.remainingSec = 0;
+          updateRestTimerUI();
+          playTimerBeep();
+          showToast(`⏱️ Descanso completado: ¡Siguiente serie de ${restTimer.label}!`, 'info');
+          stopRestTimer();
+        } else {
+          updateRestTimerUI();
+        }
+      }, 1000);
+    }
+
+    function updateRestTimerUI() {
+      const disp = document.getElementById('timer-display');
+      const lbl = document.getElementById('timer-exercise-label');
+      const prog = document.getElementById('timer-progress');
+      const pauseBtn = document.getElementById('timer-pause-btn');
+      if (!disp) return;
+
+      const m = Math.floor(restTimer.remainingSec / 60);
+      const s = restTimer.remainingSec % 60;
+      disp.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      lbl.textContent = restTimer.label;
+      prog.style.width = `${restTimer.totalSec > 0 ? Math.max(0, Math.min(100, (restTimer.remainingSec / restTimer.totalSec) * 100)) : 0}%`;
+      pauseBtn.innerHTML = `<i data-lucide="${restTimer.paused ? 'play' : 'pause'}" class="w-4 h-4"></i>`;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function adjustRestTimer(delta) {
+      restTimer.remainingSec = Math.max(5, restTimer.remainingSec + delta);
+      if (restTimer.remainingSec > restTimer.totalSec) restTimer.totalSec = restTimer.remainingSec;
+      updateRestTimerUI();
+    }
+
+    function togglePauseRestTimer() {
+      restTimer.paused = !restTimer.paused;
+      updateRestTimerUI();
+    }
+
+    function stopRestTimer(hide = true) {
+      if (restTimer.intervalId) { clearInterval(restTimer.intervalId); restTimer.intervalId = null; }
+      if (hide) document.getElementById('rest-timer-widget')?.classList.add('hidden');
+    }
+
+    function playTimerBeep() {
+      if (!state.settings.timerSound) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+        [0, 0.22, 0.44].forEach((offset, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(i === 2 ? 1046.5 : 880, now + offset);
+          gain.gain.setValueAtTime(0.001, now + offset);
+          gain.gain.exponentialRampToValueAtTime(0.22, now + offset + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.18);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + offset);
+          osc.stop(now + offset + 0.2);
+        });
+      } catch (e) {}
+    }
+
+    /*************************************************************************
+     * 11. VISTA 3: MACRO Y MESOCICLOS
+     *************************************************************************/
+    function renderCycles(container) {
+      const activeMeso = getActiveMeso();
+      container.innerHTML = `
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-extrabold text-white">Macrociclos y Mesociclos</h2>
+            <p class="text-sm text-slate-400">Estructura tus bloques de entrenamiento y descargas automáticas.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="openMacroModal()" class="px-3.5 py-2 rounded-xl bg-[#131A26] hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold inline-flex items-center gap-1.5">
+              <i data-lucide="plus" class="w-4 h-4"></i> Macrociclo
+            </button>
+            <button onclick="openMesoModal()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-[#0B0F17] text-xs font-extrabold inline-flex items-center gap-1.5">
+              <i data-lucide="plus" class="w-4 h-4"></i> Mesociclo
+            </button>
+          </div>
+        </div>
+
+        ${activeMeso ? `
+          <div class="p-5 rounded-2xl bg-[#131A26] border ${isDeloadActive(activeMeso) ? 'border-amber-500/45' : 'border-slate-800'} space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider ${isDeloadActive(activeMeso) ? 'text-amber-400' : 'text-emerald-400'}">Línea de Tiempo — Mesociclo Activo</span>
+                <h3 class="text-lg font-extrabold text-white mt-0.5">${escapeHTML(activeMeso.name)}</h3>
+                <p class="text-xs text-slate-400">${escapeHTML(activeMeso.rirProgression || '')} · ${activeMeso.deloadWeek ? `Descarga en Semana ${activeMeso.deloadWeek}` : 'Sin semana de descarga fija'}</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="setActiveMesoWeek(${Math.max(1, Number(activeMeso.currentWeek) - 1)})" class="px-3 py-2 rounded-xl bg-[#0B0F17] border border-slate-800 text-xs font-bold text-slate-300">-1 Sem</button>
+                <button onclick="advanceActiveMesoWeek()" class="px-4 py-2 rounded-xl bg-emerald-500 text-[#0B0F17] text-xs font-extrabold inline-flex items-center gap-1">Avanzar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></button>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+              ${Array.from({ length: Number(activeMeso.weeks) || 6 }, (_, i) => {
+                const wNum = i + 1;
+                const isDel = Number(activeMeso.deloadWeek) === wNum;
+                const isCur = Number(activeMeso.currentWeek) === wNum;
+                const isPast = wNum < Number(activeMeso.currentWeek);
+                return `
+                  <button onclick="setActiveMesoWeek(${wNum})" class="p-3 rounded-xl border text-left transition ${
+                    isCur
+                      ? (isDel ? 'bg-amber-500/20 border-amber-400 ring-2 ring-amber-400/25' : 'bg-emerald-500/20 border-emerald-400 ring-2 ring-emerald-400/25')
+                      : isPast ? 'bg-emerald-500/5 border-emerald-500/30' : 'bg-[#0B0F17] border-slate-800 hover:border-slate-700'
+                  }">
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-extrabold ${isCur ? 'text-white' : 'text-slate-300'}">Sem ${wNum}</span>
+                      ${isPast ? '<i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400"></i>' : ''}
+                    </div>
+                    <div class="text-[11px] font-bold mt-1 ${isDel ? 'text-amber-300' : 'text-cyan-300'}">${isDel ? 'Deload (-20%)' : 'Progresión'}</div>
+                    <div class="text-[10px] text-slate-500">${isDel ? 'RIR 3-4' : 'RIR 2 → 0-1'}</div>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <div class="space-y-4">
+          ${state.macrocycles.map(macro => {
+            const childMesos = state.mesocycles.filter(m => m.macroId === macro.id);
+            return `
+              <div class="rounded-2xl bg-[#131A26] border ${macro.active ? 'border-emerald-500/40' : 'border-slate-800'} overflow-hidden">
+                <div class="p-4 sm:p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div class="space-y-1">
+                    <div class="flex flex-wrap items-center gap-2">
+                      ${macro.active ? '<span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-extrabold uppercase">Macro Activo</span>' : ''}
+                      <span class="px-2 py-0.5 rounded-md bg-slate-800 text-cyan-300 text-[11px] font-bold">${escapeHTML(macro.goal)}</span>
+                      <span class="text-xs text-slate-400">${formatDateShort(macro.startDate)} → ${formatDateShort(macro.endDate)}</span>
+                    </div>
+                    <h4 class="text-base font-extrabold text-white">${escapeHTML(macro.name)}</h4>
+                    ${macro.notes ? `<p class="text-xs text-slate-400">${escapeHTML(macro.notes)}</p>` : ''}
+                  </div>
+                  <div class="flex items-center gap-1.5 shrink-0">
+                    ${!macro.active ? `<button onclick="activateMacro('${macro.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-500/15 text-emerald-300 text-xs font-bold">Activar</button>` : ''}
+                    <button onclick="openMesoModal(null, '${macro.id}')" class="px-3 py-1.5 rounded-lg bg-[#0B0F17] border border-slate-700 text-cyan-300 text-xs font-bold">+ Meso</button>
+                    <button onclick="openMacroModal('${macro.id}')" class="p-2 rounded-lg bg-[#0B0F17] text-slate-300"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+                    <button onclick="confirmDeleteMacro('${macro.id}')" class="p-2 rounded-lg bg-[#0B0F17] text-slate-400 hover:text-rose-400"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                  </div>
+                </div>
+                <div class="p-4 sm:p-5 space-y-2.5 bg-[#0B0F17]/40">
+                  ${childMesos.length ? childMesos.map(meso => `
+                    <div class="p-3.5 rounded-xl bg-[#131A26] border ${meso.active ? 'border-cyan-500/40' : 'border-slate-800'} flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                      <div>
+                        <div class="flex items-center gap-2">
+                          ${meso.active ? '<span class="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-extrabold uppercase">Activo</span>' : ''}
+                          <span class="text-sm font-bold text-white">${escapeHTML(meso.name)}</span>
+                        </div>
+                        <div class="text-xs text-slate-400 mt-1">Sem ${meso.currentWeek}/${meso.weeks} · ${meso.deloadWeek ? `Descarga Sem ${meso.deloadWeek}` : 'Sin descarga'} · ${escapeHTML(meso.rirProgression || '')}</div>
+                      </div>
+                      <div class="flex items-center gap-1.5">
+                        ${!meso.active ? `<button onclick="activateMeso('${meso.id}')" class="px-3 py-1.5 rounded-lg bg-cyan-500/15 text-cyan-300 text-xs font-bold">Activar</button>` : ''}
+                        <button onclick="openMesoModal('${meso.id}', '${macro.id}')" class="p-2 rounded-lg bg-[#0B0F17] text-slate-300"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+                        <button onclick="confirmDeleteMeso('${meso.id}')" class="p-2 rounded-lg bg-[#0B0F17] text-slate-400 hover:text-rose-400"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                      </div>
+                    </div>
+                  `).join('') : `<p class="text-xs text-slate-500 italic">Sin mesociclos aún.</p>`}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function setActiveMesoWeek(w) {
+      const meso = getActiveMeso();
+      if (!meso) return;
+      meso.currentWeek = Math.max(1, Math.min(Number(meso.weeks), Number(w)));
+      if (state.activeDraft && state.activeDraft.mesoId === meso.id) state.activeDraft.weekNumber = meso.currentWeek;
+      saveState();
+      renderApp();
+      showToast(`Semana activa: Semana ${meso.currentWeek}${isDeloadActive(meso) ? ' (DESCARGA)' : ''}.`, 'info');
+    }
+
+    function advanceActiveMesoWeek() {
+      const meso = getActiveMeso();
+      if (!meso) return;
+      if (Number(meso.currentWeek) < Number(meso.weeks)) setActiveMesoWeek(Number(meso.currentWeek) + 1);
+      else showToast('¡Mesociclo completado! Crea tu siguiente bloque.', 'success');
+    }
+
+    function activateMacro(id) {
+      state.macrocycles.forEach(m => m.active = (m.id === id));
+      saveState();
+      renderApp();
+    }
+
+    function activateMeso(id) {
+      const target = state.mesocycles.find(m => m.id === id);
+      if (!target) return;
+      state.mesocycles.forEach(m => m.active = (m.id === id));
+      if (target.macroId) state.macrocycles.forEach(mac => mac.active = (mac.id === target.macroId));
+      saveState();
+      renderApp();
+    }
+
+    function openMacroModal(macroId = null) {
+      const mac = macroId ? state.macrocycles.find(m => m.id === macroId) : null;
+      const goals = ['Hipertrofia', 'Fuerza', 'Definición', 'Recomposición'];
+      openModal(
+        mac ? 'Editar Macrociclo' : 'Nuevo Macrociclo',
+        `
+          <div class="space-y-3.5">
+            <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Nombre</label><input id="m-mac-name" type="text" value="${escapeHTML(mac?.name || '')}" placeholder="Ej. Bloque Volumen 2026" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white" /></div>
+            <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Objetivo</label><select id="m-mac-goal" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white">${goals.map(g => `<option value="${g}" ${(mac?.goal || 'Hipertrofia') === g ? 'selected' : ''}>${g}</option>`).join('')}</select></div>
+            <div class="grid grid-cols-2 gap-3">
+              <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Inicio</label><input id="m-mac-start" type="date" value="${mac?.startDate || getTodayISO()}" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white" /></div>
+              <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Fin</label><input id="m-mac-end" type="date" value="${mac?.endDate || addDaysISO(getTodayISO(), 180)}" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white" /></div>
+            </div>
+            <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Notas</label><textarea id="m-mac-notes" rows="2" class="w-full p-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white">${escapeHTML(mac?.notes || '')}</textarea></div>
+          </div>
+        `,
+        `<button onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300">Cancelar</button><button onclick="saveMacroModal('${macroId || ''}')" class="px-4 py-2 rounded-xl bg-emerald-500 text-xs font-extrabold text-[#0B0F17]">Guardar</button>`
+      );
+    }
+
+    function saveMacroModal(macroId) {
+      const name = (document.getElementById('m-mac-name')?.value || '').trim();
+      const goal = document.getElementById('m-mac-goal')?.value || 'Hipertrofia';
+      const startDate = document.getElementById('m-mac-start')?.value || getTodayISO();
+      const endDate = document.getElementById('m-mac-end')?.value || addDaysISO(startDate, 180);
+      const notes = (document.getElementById('m-mac-notes')?.value || '').trim();
+      if (!name) return showToast('Ingresa un nombre.', 'warning');
+
+      if (macroId) {
+        const m = state.macrocycles.find(x => x.id === macroId);
+        if (m) Object.assign(m, { name, goal, startDate, endDate, notes });
+      } else {
+        state.macrocycles.push({ id: uid('macro'), name, goal, startDate, endDate, notes, active: state.macrocycles.length === 0 });
+      }
+      saveState();
+      closeModal();
+      renderApp();
+    }
+
+    function confirmDeleteMacro(id) {
+      openConfirmModal('Eliminar Macrociclo', 'Se eliminará este macrociclo y sus mesociclos asociados.', 'Eliminar', () => {
+        state.macrocycles = state.macrocycles.filter(m => m.id !== id);
+        state.mesocycles = state.mesocycles.filter(m => m.macroId !== id);
+        saveState();
+        renderApp();
+      });
+    }
+
+    function openMesoModal(mesoId = null, defaultMacroId = null) {
+      if (!state.macrocycles.length) return showToast('Crea primero un Macrociclo.', 'warning');
+      const meso = mesoId ? state.mesocycles.find(m => m.id === mesoId) : null;
+      const parentId = meso?.macroId || defaultMacroId || getActiveMacro()?.id || state.macrocycles[0].id;
+      openModal(
+        meso ? 'Editar Mesociclo' : 'Nuevo Mesociclo',
+        `
+          <div class="space-y-3.5">
+            <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Macrociclo</label><select id="m-meso-macro" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white">${state.macrocycles.map(mac => `<option value="${mac.id}" ${mac.id === parentId ? 'selected' : ''}>${escapeHTML(mac.name)}</option>`).join('')}</select></div>
+            <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Nombre</label><input id="m-meso-name" type="text" value="${escapeHTML(meso?.name || '')}" placeholder="Ej. Mesociclo 2: Sobrecarga" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white" /></div>
+            <div class="grid grid-cols-3 gap-3">
+              <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Semanas</label><input id="m-meso-weeks" type="number" min="2" max="16" value="${meso?.weeks || 6}" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white tabular-nums" /></div>
+              <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Sem. Deload</label><input id="m-meso-deload" type="number" min="0" max="16" value="${meso?.deloadWeek ?? 6}" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white tabular-nums" /></div>
+              <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Sem. Actual</label><input id="m-meso-cur" type="number" min="1" max="16" value="${meso?.currentWeek || 1}" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white tabular-nums" /></div>
+            </div>
+            <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Progresión RIR</label><input id="m-meso-rir" type="text" value="${escapeHTML(meso?.rirProgression || 'RIR 2 → RIR 0-1')}" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white" /></div>
+            <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Notas</label><textarea id="m-meso-notes" rows="2" class="w-full p-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white">${escapeHTML(meso?.notes || '')}</textarea></div>
+          </div>
+        `,
+        `<button onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300">Cancelar</button><button onclick="saveMesoModal('${mesoId || ''}')" class="px-4 py-2 rounded-xl bg-emerald-500 text-xs font-extrabold text-[#0B0F17]">Guardar</button>`
+      );
+    }
+
+    function saveMesoModal(mesoId) {
+      const macroId = document.getElementById('m-meso-macro')?.value;
+      const name = (document.getElementById('m-meso-name')?.value || '').trim();
+      const weeks = Math.max(2, Math.min(16, parseInt(document.getElementById('m-meso-weeks')?.value, 10) || 6));
+      const deloadWeek = Math.max(0, Math.min(weeks, parseInt(document.getElementById('m-meso-deload')?.value, 10) || 0));
+      const currentWeek = Math.max(1, Math.min(weeks, parseInt(document.getElementById('m-meso-cur')?.value, 10) || 1));
+      const rirProgression = (document.getElementById('m-meso-rir')?.value || '').trim();
+      const notes = (document.getElementById('m-meso-notes')?.value || '').trim();
+      if (!name) return showToast('Ingresa un nombre.', 'warning');
+
+      if (mesoId) {
+        const m = state.mesocycles.find(x => x.id === mesoId);
+        if (m) Object.assign(m, { macroId, name, weeks, deloadWeek, currentWeek, rirProgression, notes });
+      } else {
+        state.mesocycles.forEach(x => x.active = false);
+        state.mesocycles.push({ id: uid('meso'), macroId, name, weeks, deloadWeek, currentWeek, rirProgression, notes, active: true });
+      }
+      saveState();
+      closeModal();
+      renderApp();
+    }
+
+    function confirmDeleteMeso(id) {
+      openConfirmModal('Eliminar Mesociclo', '¿Eliminar este mesociclo? Tus entrenamientos no se borrarán.', 'Eliminar', () => {
+        state.mesocycles = state.mesocycles.filter(m => m.id !== id);
+        saveState();
+        renderApp();
+      });
+    }
+
+    /*************************************************************************
+     * 12. VISTA 4: ANALÍTICAS Y SALÓN DE LA FAMA (CHART.JS)
+     *************************************************************************/
+    function getFilteredWorkoutsForAnalytics() {
+      const sc = uiFilters.analyticsScope;
+      if (sc === 'all') return state.workouts;
+      if (sc.startsWith('macro:')) return state.workouts.filter(w => w.macroId === sc.slice(6));
+      if (sc.startsWith('meso:')) return state.workouts.filter(w => w.mesoId === sc.slice(5));
+      return state.workouts;
+    }
+
+    function renderAnalytics(container) {
+      const unit = state.settings.unit;
+      const filteredWorkouts = getFilteredWorkoutsForAnalytics();
+      const hall = computeHallOfFame(filteredWorkouts);
+      const uniqueExercises = hall.map(i => i.name).sort((a, b) => a.localeCompare(b));
+      if (!uiFilters.analyticsExercise || !uniqueExercises.includes(uiFilters.analyticsExercise)) {
+        uiFilters.analyticsExercise = uniqueExercises[0] || '';
+      }
+
+      const filteredPRs = hall.filter(item => {
+        const mText = !uiFilters.prSearch || item.name.toLowerCase().includes(uiFilters.prSearch.toLowerCase());
+        const mMusc = uiFilters.prMuscle === 'all' || item.muscle === uiFilters.prMuscle;
+        return mText && mMusc;
+      });
+
+      container.innerHTML = `
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-extrabold text-white">Analíticas y PRs</h2>
+            <p class="text-sm text-slate-400">Evolución de e1RM, volumen por músculo, tonelaje, peso corporal y récords.</p>
+          </div>
+          <select onchange="uiFilters.analyticsScope=this.value; destroyAllCharts(); renderApp();" class="h-10 px-3 rounded-xl bg-[#131A26] border border-slate-700 text-xs sm:text-sm font-semibold text-white">
+            <option value="all" ${uiFilters.analyticsScope === 'all' ? 'selected' : ''}>Todo el historial (${state.workouts.length})</option>
+            <optgroup label="Macrociclos">${state.macrocycles.map(m => `<option value="macro:${m.id}" ${uiFilters.analyticsScope === `macro:${m.id}` ? 'selected' : ''}>Macro: ${escapeHTML(m.name)}</option>`).join('')}</optgroup>
+            <optgroup label="Mesociclos">${state.mesocycles.map(m => `<option value="meso:${m.id}" ${uiFilters.analyticsScope === `meso:${m.id}` ? 'selected' : ''}>Meso: ${escapeHTML(m.name)}</option>`).join('')}</optgroup>
+          </select>
+        </div>
+
+        ${filteredWorkouts.length === 0 ? `
+          <div class="p-10 rounded-2xl bg-[#131A26] border border-dashed border-slate-800 text-center space-y-3">
+            <i data-lucide="bar-chart-3" class="w-10 h-10 text-slate-600 mx-auto"></i>
+            <p class="text-sm font-bold text-white">Sin sesiones para graficar</p>
+            <button onclick="loadDemoData()" class="px-4 py-2 rounded-xl bg-amber-500/20 border border-amber-500/35 text-amber-300 text-xs font-bold">Cargar Datos Demo (6 sem)</button>
+          </div>
+        ` : `
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <div class="p-5 rounded-2xl bg-[#131A26] border border-slate-800/90">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                <div>
+                  <h3 class="text-base font-bold text-white">Progresión e1RM y Peso Máximo</h3>
+                  <p class="text-xs text-slate-400">Fuerza estimada por ejercicio</p>
+                </div>
+                <select onchange="uiFilters.analyticsExercise=this.value; destroyAllCharts(); renderApp();" class="h-9 px-2.5 rounded-lg bg-[#0B0F17] border border-slate-700 text-xs font-semibold text-emerald-300 max-w-[230px]">
+                  ${uniqueExercises.map(n => `<option value="${escapeHTML(n)}" ${n === uiFilters.analyticsExercise ? 'selected' : ''}>${escapeHTML(n)}</option>`).join('')}
+                </select>
+              </div>
+              <div class="relative h-64 w-full"><canvas id="chart-strength"></canvas></div>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-[#131A26] border border-slate-800/90">
+              <div class="mb-4">
+                <h3 class="text-base font-bold text-white">Volumen Semanal Promedio (Series)</h3>
+                <p class="text-xs text-slate-400">Series efectivas directas por músculo/semana</p>
+              </div>
+              <div class="relative h-64 w-full"><canvas id="chart-muscle-vol"></canvas></div>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-[#131A26] border border-slate-800/90">
+              <div class="mb-4">
+                <h3 class="text-base font-bold text-white">Tonelaje y RIR Promedio por Sesión</h3>
+                <p class="text-xs text-slate-400">Carga total (${unit}) vs cercanía al fallo</p>
+              </div>
+              <div class="relative h-64 w-full"><canvas id="chart-tonnage-rir"></canvas></div>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-[#131A26] border border-slate-800/90">
+              <div class="mb-4">
+                <h3 class="text-base font-bold text-white">Evolución de Peso Corporal</h3>
+                <p class="text-xs text-slate-400">Tendencia registrada (${unit})</p>
+              </div>
+              <div class="relative h-64 w-full"><canvas id="chart-bodyweight"></canvas></div>
+            </div>
+          </div>
+
+          <!-- Salón de la Fama -->
+          <div class="p-5 rounded-2xl bg-[#131A26] border border-slate-800/90 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex items-center gap-2.5">
+                <span class="p-2 rounded-xl bg-amber-500/15 text-amber-400"><i data-lucide="trophy" class="w-5 h-5"></i></span>
+                <div>
+                  <h3 class="text-base font-extrabold text-white">Salón de la Fama — Tabla de PRs</h3>
+                  <p class="text-xs text-slate-400">Récords absolutos y % de mejora desde tu primera sesión</p>
+                </div>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <input type="text" placeholder="Buscar ejercicio..." value="${escapeHTML(uiFilters.prSearch)}" oninput="uiFilters.prSearch=this.value; updatePRTableOnly();" class="h-9 px-3 rounded-lg bg-[#0B0F17] border border-slate-700 text-xs text-white" />
+                <select onchange="uiFilters.prMuscle=this.value; updatePRTableOnly();" class="h-9 px-2.5 rounded-lg bg-[#0B0F17] border border-slate-700 text-xs text-slate-200">
+                  <option value="all">Todos</option>
+                  ${MUSCLE_GROUPS.map(m => `<option value="${m}" ${uiFilters.prMuscle === m ? 'selected' : ''}>${m}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+              <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                <thead>
+                  <tr class="bg-[#0B0F17] text-[11px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
+                    <th class="py-3 px-4">Ejercicio</th>
+                    <th class="py-3 px-3">Músculo</th>
+                    <th class="py-3 px-3 text-right">PR Carga</th>
+                    <th class="py-3 px-3 text-right">Mejor e1RM</th>
+                    <th class="py-3 px-3">Mejor Serie</th>
+                    <th class="py-3 px-4 text-right">% Mejora</th>
+                  </tr>
+                </thead>
+                <tbody id="pr-table-body" class="divide-y divide-slate-800/70">
+                  ${renderPRRowsHTML(filteredPRs, unit)}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `}
+      `;
+
+      if (filteredWorkouts.length > 0) initAnalyticsCharts(filteredWorkouts, unit);
+    }
+
+    function renderPRRowsHTML(rows, unit) {
+      if (!rows.length) return `<tr><td colspan="6" class="py-6 text-center text-xs text-slate-500">Sin resultados.</td></tr>`;
+      return rows.map(r => `
+        <tr class="hover:bg-[#192233] transition">
+          <td class="py-3 px-4 font-bold text-white">${escapeHTML(r.name)}</td>
+          <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-slate-800 text-emerald-300 text-[11px] font-semibold whitespace-nowrap">${escapeHTML(r.muscle)}</span></td>
+          <td class="py-3 px-3 text-right font-extrabold text-amber-300 tabular-nums whitespace-nowrap">${r.maxWeight} ${unit}</td>
+          <td class="py-3 px-3 text-right font-extrabold text-cyan-300 tabular-nums whitespace-nowrap">${r.maxE1rm} ${unit}</td>
+          <td class="py-3 px-3 text-slate-300 tabular-nums whitespace-nowrap">${r.bestSet.weight}${unit} × ${r.bestSet.reps} @RIR${r.bestSet.rir}</td>
+          <td class="py-3 px-4 text-right font-extrabold tabular-nums whitespace-nowrap ${r.improvementPct > 0 ? 'text-emerald-400' : 'text-slate-400'}">${r.improvementPct > 0 ? `+${r.improvementPct}%` : `${r.improvementPct}%`}</td>
+        </tr>
+      `).join('');
+    }
+
+    function updatePRTableOnly() {
+      const tbody = document.getElementById('pr-table-body');
+      if (!tbody) return;
+      const hall = computeHallOfFame(getFilteredWorkoutsForAnalytics()).filter(i => {
+        const mt = !uiFilters.prSearch || i.name.toLowerCase().includes(uiFilters.prSearch.toLowerCase());
+        const mm = uiFilters.prMuscle === 'all' || i.muscle === uiFilters.prMuscle;
+        return mt && mm;
+      });
+      tbody.innerHTML = renderPRRowsHTML(hall, state.settings.unit);
+    }
+
+    function initAnalyticsCharts(workoutsList, unit) {
+      const chrono = [...workoutsList].sort((a, b) => a.date.localeCompare(b.date));
+      const tt = { backgroundColor: '#0B0F17', borderColor: '#334155', borderWidth: 1, padding: 10 };
+
+      const sCtx = document.getElementById('chart-strength');
+      if (sCtx && uiFilters.analyticsExercise) {
+        const target = normalizeName(uiFilters.analyticsExercise);
+        const labels = [], weights = [], e1rms = [];
+        for (const wk of chrono) {
+          const ex = (wk.exercises || []).find(e => normalizeName(e.name) === target);
+          if (!ex) continue;
+          const valid = (ex.sets || []).filter(s => s.completed && s.weight > 0 && s.reps > 0);
+          if (!valid.length) continue;
+          labels.push(formatDateShort(wk.date));
+          weights.push(Math.max(...valid.map(s => parseFloat(s.weight))));
+          e1rms.push(Math.max(...valid.map(s => calcE1RM(s.weight, s.reps, s.rir))));
+        }
+        charts.strength = new Chart(sCtx, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [
+              { label: `e1RM (${unit})`, data: e1rms, borderColor: '#10B981', backgroundColor: 'rgba(16,185,129,0.12)', fill: true, tension: 0.3, borderWidth: 2.5, pointRadius: 4 },
+              { label: `Peso Máx (${unit})`, data: weights, borderColor: '#06B6D4', tension: 0.3, borderWidth: 2.5, borderDash: [5, 4], pointRadius: 4 }
+            ]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#cbd5e1', font: { size: 11 } } }, tooltip: tt },
+            scales: { x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(51,65,85,0.25)' } }, y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(51,65,85,0.35)' } } }
+          }
+        });
+      }
+
+      const vCtx = document.getElementById('chart-muscle-vol');
+      if (vCtx) {
+        const entries = Object.entries(computeMuscleVolume(workoutsList, 'weeklyAvg')).sort((a, b) => b[1] - a[1]);
+        charts.muscleVol = new Chart(vCtx, {
+          type: 'bar',
+          data: {
+            labels: entries.map(e => e[0]),
+            datasets: [{ label: 'Series/sem', data: entries.map(e => e[1]), backgroundColor: 'rgba(16, 185, 129, 0.8)', borderRadius: 6 }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: tt },
+            scales: { x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }, y: { beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(51,65,85,0.35)' } } }
+          }
+        });
+      }
+
+      const tCtx = document.getElementById('chart-tonnage-rir');
+      if (tCtx) {
+        const recent = chrono.slice(-18);
+        const labels = recent.map(w => `${formatDateShort(w.date).slice(0, 6)} (${w.dayName.slice(0, 7)})`);
+        const tonnages = recent.map(w => Math.round(w.exercises.reduce((sum, ex) => sum + ex.sets.filter(s => s.completed).reduce((a, s) => a + s.weight * s.reps, 0), 0)));
+        const avgRirs = recent.map(w => {
+          const all = w.exercises.flatMap(ex => ex.sets.filter(s => s.completed));
+          return all.length ? Math.round((all.reduce((a, s) => a + (parseFloat(s.rir) || 0), 0) / all.length) * 10) / 10 : 0;
+        });
+        charts.tonnage = new Chart(tCtx, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [
+              { type: 'bar', label: `Tonelaje (${unit})`, data: tonnages, backgroundColor: 'rgba(6, 182, 212, 0.55)', borderColor: '#06B6D4', borderWidth: 1, borderRadius: 5, yAxisID: 'y' },
+              { type: 'line', label: 'RIR Promedio', data: avgRirs, borderColor: '#fbbf24', borderWidth: 2.5, tension: 0.3, pointRadius: 3.5, yAxisID: 'y1' }
+            ]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#cbd5e1', font: { size: 11 } } }, tooltip: tt },
+            scales: {
+              x: { ticks: { color: '#94a3b8', font: { size: 9 }, maxRotation: 45 }, grid: { display: false } },
+              y: { position: 'left', beginAtZero: true, ticks: { color: '#06B6D4', font: { size: 10 } }, grid: { color: 'rgba(51,65,85,0.3)' } },
+              y1: { position: 'right', min: 0, max: 5, ticks: { color: '#fbbf24', stepSize: 1 }, grid: { drawOnChartArea: false } }
+            }
+          }
+        });
+      }
+
+      const bCtx = document.getElementById('chart-bodyweight');
+      if (bCtx) {
+        const bws = chrono.filter(w => w.bodyweight && !isNaN(parseFloat(w.bodyweight)));
+        charts.bw = new Chart(bCtx, {
+          type: 'line',
+          data: {
+            labels: bws.map(w => formatDateShort(w.date)),
+            datasets: [{ label: `Peso (${unit})`, data: bws.map(w => parseFloat(w.bodyweight)), borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.14)', fill: true, tension: 0.35, borderWidth: 2.5, pointRadius: 3.5 }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#cbd5e1', font: { size: 11 } } }, tooltip: tt },
+            scales: { x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(51,65,85,0.25)' } }, y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(51,65,85,0.35)' } } }
+          }
+        });
+      }
+    }
+
+    /*************************************************************************
+     * 13. VISTA 5: EDITOR DE RUTINA
+     *************************************************************************/
+    function renderRoutineEditor(container) {
+      if (!uiFilters.routineSelectedDayId || !state.routine.find(d => d.id === uiFilters.routineSelectedDayId)) {
+        uiFilters.routineSelectedDayId = state.routine[0]?.id || null;
+      }
+      const selectedDay = state.routine.find(d => d.id === uiFilters.routineSelectedDayId);
+
+      container.innerHTML = `
+        ${renderMobileHubSwitcher()}
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-extrabold text-white">Editor de Rutina</h2>
+            <p class="text-sm text-slate-400">Personaliza tus días, ejercicios, series, RIR, descansos y notas biomecánicas.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="confirmRestoreDefaultRoutine()" class="px-3.5 py-2 rounded-xl bg-[#131A26] border border-slate-700 text-slate-300 text-xs font-bold inline-flex items-center gap-1.5"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Restaurar Base</button>
+            <button onclick="openDayModal()" class="px-4 py-2 rounded-xl bg-emerald-500 text-[#0B0F17] text-xs font-extrabold inline-flex items-center gap-1.5"><i data-lucide="plus" class="w-4 h-4"></i> Nuevo Día</button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 overflow-x-auto pb-1">
+          ${state.routine.map(d => {
+            const active = d.id === uiFilters.routineSelectedDayId;
+            const totalS = d.exercises.reduce((a, e) => a + (Number(e.sets) || 0), 0);
+            return `
+              <button onclick="uiFilters.routineSelectedDayId='${d.id}'; renderApp();" class="shrink-0 px-4 py-2.5 rounded-xl border text-left transition ${
+                active ? 'bg-emerald-500/15 border-emerald-500/50 text-white' : 'bg-[#131A26] border-slate-800 text-slate-400'
+              }">
+                <div class="text-sm font-extrabold">${escapeHTML(d.name)}</div>
+                <div class="text-[11px] ${active ? 'text-emerald-300' : 'text-slate-500'}">${d.exercises.length} ejerc. · ${totalS} series</div>
+              </button>
+            `;
+          }).join('')}
+        </div>
+
+        ${selectedDay ? `
+          <div class="p-4 sm:p-5 rounded-2xl bg-[#131A26] border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-extrabold text-white">${escapeHTML(selectedDay.name)}</h3>
+              <p class="text-xs text-slate-400">${escapeHTML(selectedDay.subtitle || '')}</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="openDayModal('${selectedDay.id}')" class="px-3 py-1.5 rounded-lg bg-[#0B0F17] border border-slate-700 text-xs font-semibold text-slate-200">Renombrar</button>
+              <button onclick="openExerciseModal('${selectedDay.id}')" class="px-3.5 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/35 text-xs font-bold text-emerald-300">+ Añadir Ejercicio</button>
+              ${state.routine.length > 1 ? `<button onclick="confirmDeleteDay('${selectedDay.id}')" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-xs font-semibold text-rose-400">Eliminar Día</button>` : ''}
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            ${selectedDay.exercises.map((ex, idx) => `
+              <div class="p-4 rounded-2xl bg-[#131A26] border border-slate-800/90 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div class="space-y-1.5 min-w-0 flex-1">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-extrabold text-slate-500">#${idx + 1}</span>
+                    <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 text-[11px] font-bold">${escapeHTML(ex.muscle)}</span>
+                    <span class="px-2 py-0.5 rounded bg-[#0B0F17] text-slate-300 text-[11px] font-semibold tabular-nums">${ex.sets} × ${ex.repMin}-${ex.repMax} reps</span>
+                    <span class="px-2 py-0.5 rounded bg-[#0B0F17] text-cyan-300 text-[11px] font-semibold">RIR ${escapeHTML(ex.rirTarget)}</span>
+                    <span class="px-2 py-0.5 rounded bg-[#0B0F17] text-amber-300 text-[11px] font-semibold tabular-nums">${ex.restSec}s</span>
+                  </div>
+                  <h4 class="text-base font-bold text-white">${escapeHTML(ex.name)}</h4>
+                  ${ex.notes ? `<p class="text-xs text-slate-400">${escapeHTML(ex.notes)}</p>` : ''}
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <button onclick="moveExercise('${selectedDay.id}', ${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="p-2 rounded-lg bg-[#0B0F17] disabled:opacity-30 text-slate-300"><i data-lucide="arrow-up" class="w-4 h-4"></i></button>
+                  <button onclick="moveExercise('${selectedDay.id}', ${idx}, 1)" ${idx === selectedDay.exercises.length - 1 ? 'disabled' : ''} class="p-2 rounded-lg bg-[#0B0F17] disabled:opacity-30 text-slate-300"><i data-lucide="arrow-down" class="w-4 h-4"></i></button>
+                  <button onclick="openExerciseModal('${selectedDay.id}', '${ex.id}')" class="p-2 rounded-lg bg-[#0B0F17] text-cyan-300"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+                  <button onclick="confirmDeleteExercise('${selectedDay.id}', '${ex.id}')" class="p-2 rounded-lg bg-[#0B0F17] text-slate-400 hover:text-rose-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+      `;
+    }
+
+    function openDayModal(dayId = null) {
+      const existing = dayId ? state.routine.find(d => d.id === dayId) : null;
+      openModal(
+        existing ? 'Editar Día' : 'Nuevo Día',
+        `
+          <div class="space-y-3.5">
+            <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Nombre</label><input id="modal-day-name" type="text" value="${escapeHTML(existing?.name || '')}" placeholder="Ej. Torso C" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white" /></div>
+            <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Subtítulo</label><input id="modal-day-sub" type="text" value="${escapeHTML(existing?.subtitle || '')}" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white" /></div>
+          </div>
+        `,
+        `<button onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300">Cancelar</button><button onclick="saveDayModal('${dayId || ''}')" class="px-4 py-2 rounded-xl bg-emerald-500 text-xs font-extrabold text-[#0B0F17]">Guardar</button>`
+      );
+    }
+
+    function saveDayModal(dayId) {
+      const name = (document.getElementById('modal-day-name')?.value || '').trim();
+      const subtitle = (document.getElementById('modal-day-sub')?.value || '').trim();
+      if (!name) return showToast('Ingresa un nombre.', 'warning');
+      if (dayId) {
+        const d = state.routine.find(x => x.id === dayId);
+        if (d) { d.name = name; d.subtitle = subtitle; }
+      } else {
+        const nd = { id: uid('day'), name, subtitle, exercises: [] };
+        state.routine.push(nd);
+        uiFilters.routineSelectedDayId = nd.id;
+      }
+      saveState();
+      closeModal();
+      renderApp();
+    }
+
+    function confirmDeleteDay(dayId) {
+      openConfirmModal('Eliminar Día', '¿Quitar este día de la rutina? Tu historial no se borrará.', 'Eliminar', () => {
+        state.routine = state.routine.filter(x => x.id !== dayId);
+        uiFilters.routineSelectedDayId = state.routine[0]?.id || null;
+        saveState();
+        renderApp();
+      });
+    }
+
+    function openExerciseModal(dayId, exId = null) {
+      const day = state.routine.find(d => d.id === dayId);
+      if (!day) return;
+      const ex = exId ? day.exercises.find(e => e.id === exId) : null;
+      openModal(
+        ex ? 'Editar Ejercicio' : `Nuevo Ejercicio en ${day.name}`,
+        `
+          <div class="space-y-3.5">
+            <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Nombre</label><input id="m-ex-name" type="text" value="${escapeHTML(ex?.name || '')}" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white" /></div>
+            <div class="grid grid-cols-2 gap-3">
+              <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Músculo</label><select id="m-ex-muscle" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white">${MUSCLE_GROUPS.map(m => `<option value="${m}" ${(ex?.muscle || 'Pecho') === m ? 'selected' : ''}>${m}</option>`).join('')}</select></div>
+              <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Series</label><input id="m-ex-sets" type="number" min="1" max="10" value="${ex?.sets || 2}" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white" /></div>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Reps Min</label><input id="m-ex-rmin" type="number" value="${ex?.repMin || 8}" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white" /></div>
+              <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Reps Max</label><input id="m-ex-rmax" type="number" value="${ex?.repMax || 10}" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white" /></div>
+              <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">RIR Meta</label><input id="m-ex-rir" type="text" value="${escapeHTML(ex?.rirTarget || '1-2')}" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white" /></div>
+              <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Descanso (s)</label><input id="m-ex-rest" type="number" step="15" value="${ex?.restSec || 120}" class="w-full h-10 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white" /></div>
+            </div>
+            <div><label class="block text-xs font-bold uppercase text-slate-400 mb-1">Nota Biomecánica</label><textarea id="m-ex-notes" rows="2" class="w-full p-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm text-white">${escapeHTML(ex?.notes || '')}</textarea></div>
+          </div>
+        `,
+        `<button onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300">Cancelar</button><button onclick="saveExerciseModal('${dayId}', '${exId || ''}')" class="px-4 py-2 rounded-xl bg-emerald-500 text-xs font-extrabold text-[#0B0F17]">Guardar</button>`
+      );
+    }
+
+    function saveExerciseModal(dayId, exId) {
+      const day = state.routine.find(d => d.id === dayId);
+      if (!day) return;
+      const name = (document.getElementById('m-ex-name')?.value || '').trim();
+      const muscle = document.getElementById('m-ex-muscle')?.value || 'Pecho';
+      const sets = Math.max(1, parseInt(document.getElementById('m-ex-sets')?.value, 10) || 2);
+      const repMin = Math.max(1, parseInt(document.getElementById('m-ex-rmin')?.value, 10) || 8);
+      const repMax = Math.max(repMin, parseInt(document.getElementById('m-ex-rmax')?.value, 10) || repMin + 2);
+      const rirTarget = (document.getElementById('m-ex-rir')?.value || '1-2').trim();
+      const restSec = Math.max(30, parseInt(document.getElementById('m-ex-rest')?.value, 10) || 120);
+      const notes = (document.getElementById('m-ex-notes')?.value || '').trim();
+      if (!name) return showToast('Escribe un nombre.', 'warning');
+
+      if (exId) {
+        const ex = day.exercises.find(e => e.id === exId);
+        if (ex) Object.assign(ex, { name, muscle, sets, repMin, repMax, rirTarget, restSec, notes });
+      } else {
+        day.exercises.push({ id: uid('ex'), name, muscle, sets, repMin, repMax, rirTarget, restSec, notes });
+      }
+      saveState();
+      closeModal();
+      renderApp();
+    }
+
+    function moveExercise(dayId, idx, dir) {
+      const day = state.routine.find(d => d.id === dayId);
+      if (!day) return;
+      const t = idx + dir;
+      if (t < 0 || t >= day.exercises.length) return;
+      [day.exercises[idx], day.exercises[t]] = [day.exercises[t], day.exercises[idx]];
+      saveState();
+      renderApp();
+    }
+
+    function confirmDeleteExercise(dayId, exId) {
+      openConfirmModal('Eliminar Ejercicio', '¿Quitar este ejercicio del día? El historial se conserva.', 'Eliminar', () => {
+        const day = state.routine.find(d => d.id === dayId);
+        if (day) day.exercises = day.exercises.filter(e => e.id !== exId);
+        saveState();
+        renderApp();
+      });
+    }
+
+    function confirmRestoreDefaultRoutine() {
+      openConfirmModal('Restaurar Rutina Base', 'Se restaurarán los 4 días Torso-Pierna originales (2 series efectivas). Tu historial no se borra.', 'Restaurar', () => {
+        state.routine = getDefaultRoutine();
+        uiFilters.routineSelectedDayId = state.routine[0].id;
+        state.activeDraft = null;
+        saveState();
+        renderApp();
+        showToast('Rutina base restaurada.', 'success');
+      });
+    }
+
+    /*************************************************************************
+     * 14. VISTA 6: HISTORIAL
+     *************************************************************************/
+    function renderHistory(container) {
+      const unit = state.settings.unit;
+      const sorted = getSortedWorkouts();
+      const filtered = sorted.filter(wk => {
+        const mDay = uiFilters.historyDay === 'all' || wk.dayName === uiFilters.historyDay;
+        const q = uiFilters.historySearch.trim().toLowerCase();
+        const mQ = !q || wk.dayName.toLowerCase().includes(q) || (wk.notes || '').toLowerCase().includes(q) || wk.exercises.some(e => e.name.toLowerCase().includes(q));
+        return mDay && mQ;
+      });
+      const dayNames = [...new Set(sorted.map(w => w.dayName))];
+
+      container.innerHTML = `
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-extrabold text-white">Historial</h2>
+            <p class="text-sm text-slate-400">${filtered.length} sesiones registradas.</p>
+          </div>
+          <button onclick="exportCSV()" class="px-4 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 text-xs font-bold inline-flex items-center gap-2"><i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Exportar CSV / Sheets</button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <input type="text" placeholder="Buscar ejercicio o nota..." value="${escapeHTML(uiFilters.historySearch)}" oninput="uiFilters.historySearch=this.value; renderApp();" class="h-10 px-3 rounded-xl bg-[#131A26] border border-slate-700 text-xs sm:text-sm text-white" />
+          <select onchange="uiFilters.historyDay=this.value; renderApp();" class="h-10 px-3 rounded-xl bg-[#131A26] border border-slate-700 text-xs sm:text-sm text-slate-200">
+            <option value="all">Todos los días</option>
+            ${dayNames.map(dn => `<option value="${escapeHTML(dn)}" ${uiFilters.historyDay === dn ? 'selected' : ''}>${escapeHTML(dn)}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="space-y-3">
+          ${filtered.length ? filtered.map(wk => {
+            const expanded = uiFilters.expandedHistoryIds.has(wk.id);
+            const setsCount = wk.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed).length, 0);
+            const tonnage = Math.round(wk.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed).reduce((x, s) => x + s.weight * s.reps, 0), 0));
+            return `
+              <div class="rounded-2xl bg-[#131A26] border border-slate-800/90 overflow-hidden">
+                <div onclick="toggleHistoryExpand('${wk.id}')" class="p-4 cursor-pointer hover:bg-[#192233] flex items-center justify-between gap-3">
+                  <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                      <span class="text-base font-extrabold text-white">${escapeHTML(wk.dayName)}</span>
+                      <span class="px-2 py-0.5 rounded bg-[#0B0F17] text-cyan-300 text-[11px] font-semibold">${formatDateShort(wk.date)}</span>
+                    </div>
+                    <div class="text-xs text-slate-400 mt-1 tabular-nums">${setsCount} series · ${tonnage.toLocaleString()} ${unit}${wk.bodyweight ? ` · BW ${wk.bodyweight}${unit}` : ''}</div>
+                  </div>
+                  <div class="flex items-center gap-1.5" onclick="event.stopPropagation()">
+                    <button onclick="confirmDeleteWorkout('${wk.id}')" class="p-2 rounded-lg bg-[#0B0F17] text-slate-400 hover:text-rose-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <button onclick="toggleHistoryExpand('${wk.id}')" class="p-2 rounded-lg bg-[#0B0F17] text-slate-300"><i data-lucide="${expanded ? 'chevron-up' : 'chevron-down'}" class="w-4 h-4"></i></button>
+                  </div>
+                </div>
+                ${expanded ? `
+                  <div class="p-4 pt-2 border-t border-slate-800 bg-[#0B0F17]/60 space-y-2.5">
+                    ${wk.notes ? `<p class="text-xs text-slate-300 bg-[#131A26] p-2.5 rounded-xl border border-slate-800">${escapeHTML(wk.notes)}</p>` : ''}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                      ${wk.exercises.map(ex => `
+                        <div class="p-3 rounded-xl bg-[#131A26] border border-slate-800 space-y-1.5">
+                          <div class="text-xs font-bold text-white">${escapeHTML(ex.name)}</div>
+                          ${ex.sets.map((s, i) => `
+                            <div class="flex justify-between text-xs px-2 py-1 rounded bg-[#0B0F17] tabular-nums">
+                              <span class="text-slate-400">S${i + 1}</span>
+                              <span class="font-bold text-slate-100">${s.weight}${unit} × ${s.reps} @RIR${s.rir}</span>
+                              <span class="text-emerald-300">e1RM ${s.e1rm || calcE1RM(s.weight, s.reps, s.rir)} ${(s.isWeightPR || s.isE1rmPR) ? '🏆' : ''}</span>
+                            </div>
+                          `).join('')}
+                        </div>
+                      `).join('')}
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          }).join('') : `<div class="p-8 rounded-2xl bg-[#131A26] text-center text-sm text-slate-400">Sin sesiones registradas.</div>`}
+        </div>
+      `;
+    }
+
+    function toggleHistoryExpand(id) {
+      if (uiFilters.expandedHistoryIds.has(id)) uiFilters.expandedHistoryIds.delete(id);
+      else uiFilters.expandedHistoryIds.add(id);
+      renderApp();
+    }
+
+    function confirmDeleteWorkout(id) {
+      openConfirmModal('Eliminar Sesión', '¿Borrar esta sesión del historial?', 'Eliminar', () => {
+        state.workouts = state.workouts.filter(w => w.id !== id);
+        saveState();
+        renderApp();
+      });
+    }
+
+    /*************************************************************************
+     * 15. VISTA 7: CENTRO DE CUENTA, NUBE FIREBASE Y RESPALDO
+     *************************************************************************/
+    function renderCloudCenter(container) {
+      const hasConfig = !!cloud.activeConfig;
+      const isSignedIn = !!cloud.user;
+      const isEmailUser = !!(cloud.user && !cloud.user.isAnonymous);
+      const sizeKB = Math.round((new Blob([JSON.stringify(state)]).size / 1024) * 10) / 10;
+
+      container.innerHTML = `
+        ${renderMobileHubSwitcher()}
+
+        <div>
+          <h2 class="text-2xl font-extrabold text-white">Cuenta, Nube y Respaldo</h2>
+          <p class="text-sm text-slate-400">Sincroniza entre iPhone, Android y PC con cuentas independientes para ti y tu gym bro.</p>
+        </div>
+
+        <!-- Tarjeta de Estado de Nube y Autenticación -->
+        <div class="p-5 rounded-2xl bg-[#131A26] border border-slate-800 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-2xl ${cloud.status === 'synced' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-cyan-500/15 text-cyan-400'} flex items-center justify-center shrink-0">
+                <i data-lucide="cloud" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <h3 class="text-base font-extrabold text-white">
+                  ${cloud.status === 'synced' ? 'Sincronización en la Nube Activa' : (hasConfig ? 'Firebase Listo para Iniciar Sesión' : 'Modo Local Persistente (Sin Nube Propia)')}
+                </h3>
+                <p class="text-xs text-slate-400">
+                  ${isSignedIn ? `Usuario conectado: <strong class="text-emerald-300">${escapeHTML(cloud.user.email || 'Sesión Automática')}</strong>` : 'Tus datos se guardan en este dispositivo (IndexedDB + LocalStorage).'}
+                </p>
+                ${isSignedIn ? `<p class="text-[10px] text-slate-500 font-mono mt-0.5 break-all">UID: ${escapeHTML(cloud.user.uid)}</p>` : ''}
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="openFirebaseConfigModal()" class="px-3.5 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/35 text-cyan-300 text-xs font-extrabold inline-flex items-center gap-1.5">
+                <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+                Configurar mi Firebase Gratis
+              </button>
+              ${isSignedIn ? `
+                <button onclick="manualCloudSync()" class="px-3.5 py-2 rounded-xl bg-[#0B0F17] hover:bg-slate-800 border border-slate-700 text-emerald-300 text-xs font-bold inline-flex items-center gap-1.5">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Sincronizar
+                </button>
+              ` : ''}
+            </div>
+          </div>
+
+          ${cloud.errorMsg ? `
+            <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/35 text-xs text-rose-300">
+              <strong>Aviso de Nube:</strong> ${escapeHTML(cloud.errorMsg)}
+            </div>
+          ` : ''}
+
+          <!-- Formulario de Login / Registro Email & Contraseña -->
+          ${hasConfig ? (
+            isEmailUser ? `
+              <div class="p-4 rounded-xl bg-[#0B0F17] border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="text-xs text-slate-300">
+                  Sesión iniciada como <strong class="text-white">${escapeHTML(cloud.user.email)}</strong>.
+                  Tus entrenamientos están aislados en tu propia carpeta privada en la nube.
+                  ${cloud.lastSyncAt ? `<div class="text-[11px] text-emerald-400 mt-0.5">Última sincronización: ${new Date(cloud.lastSyncAt).toLocaleTimeString()}</div>` : ''}
+                </div>
+                <button onclick="handleCloudSignOut()" class="px-4 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 text-xs font-bold shrink-0">
+                  Cerrar Sesión
+                </button>
+              </div>
+            ` : `
+              <div class="p-4 rounded-xl bg-[#0B0F17] border border-slate-800 space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex gap-2">
+                    <button onclick="cloud.authMode='login'; renderApp();" class="px-3 py-1.5 rounded-lg text-xs font-extrabold ${cloud.authMode === 'login' ? 'bg-emerald-500 text-[#0B0F17]' : 'bg-slate-800 text-slate-400'}">Iniciar Sesión</button>
+                    <button onclick="cloud.authMode='register'; renderApp();" class="px-3 py-1.5 rounded-lg text-xs font-extrabold ${cloud.authMode === 'register' ? 'bg-cyan-500 text-[#0B0F17]' : 'bg-slate-800 text-slate-400'}">Crear Cuenta Nueva</button>
+                  </div>
+                  <span class="text-[11px] text-slate-500 hidden sm:inline">Cada cuenta guarda sus propios datos</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <input id="auth-email" type="email" placeholder="Correo electrónico" class="h-11 px-3 rounded-xl bg-[#131A26] border border-slate-700 text-sm text-white focus:outline-none focus:border-emerald-500" />
+                  <input id="auth-pass" type="password" placeholder="Contraseña (mín. 6 caracteres)" class="h-11 px-3 rounded-xl bg-[#131A26] border border-slate-700 text-sm text-white focus:outline-none focus:border-emerald-500" />
+                  <button onclick="handleEmailAuth()" class="h-11 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-[#0B0F17] text-sm font-extrabold transition active:scale-95">
+                    ${cloud.authMode === 'login' ? 'Entrar a mi Nube' : 'Registrarme'}
+                  </button>
+                </div>
+              </div>
+            `
+          ) : `
+            <div class="p-4 rounded-xl bg-cyan-500/5 border border-cyan-500/25 text-xs text-slate-300 leading-relaxed">
+              Actualmente usas el <strong>Modo Local Persistente</strong>. Para que tus datos nunca se borren en iPhone y puedas compartir el enlace con tu gym bro usando cuentas separadas, toca <strong>Configurar mi Firebase Gratis</strong> arriba y sigue la guía de 3 minutos.
+            </div>
+          `}
+        </div>
+
+        <!-- Exportación y Respaldo Descargable -->
+        <div class="p-5 rounded-2xl bg-[#131A26] border border-slate-800 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-base font-bold text-white">Base de Datos Descargable (JSON y Google Sheets)</h3>
+              <p class="text-xs text-slate-400">${state.workouts.length} sesiones guardadas · Tamaño actual: ${sizeKB} KB</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <button onclick="downloadJSONBackup()" class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-[#0B0F17] text-xs sm:text-sm font-extrabold transition active:scale-95">
+              <i data-lucide="download" class="w-4 h-4"></i> Descargar BD (.json)
+            </button>
+            <button onclick="triggerImportJSON()" class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#0B0F17] hover:bg-slate-800 border border-slate-700 text-white text-xs sm:text-sm font-bold transition active:scale-95">
+              <i data-lucide="upload" class="w-4 h-4 text-cyan-400"></i> Importar BD (.json)
+            </button>
+            <button onclick="exportCSV()" class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/35 text-cyan-300 text-xs sm:text-sm font-bold transition active:scale-95">
+              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Exportar Sheets / Excel (.csv)
+            </button>
+          </div>
+        </div>
+
+        <!-- Ajustes de Entrenamiento -->
+        <div class="p-5 rounded-2xl bg-[#131A26] border border-slate-800 space-y-4">
+          <h3 class="text-base font-bold text-white">Preferencias</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-400 mb-1.5">Unidad</label>
+              <select onchange="updateSetting('unit', this.value)" class="w-full h-11 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm font-bold text-white">
+                <option value="kg" ${state.settings.unit === 'kg' ? 'selected' : ''}>Kilogramos (kg)</option>
+                <option value="lb" ${state.settings.unit === 'lb' ? 'selected' : ''}>Libras (lb)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-400 mb-1.5">Incremento Mínimo</label>
+              <select onchange="updateSetting('minIncrement', parseFloat(this.value))" class="w-full h-11 px-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-sm font-bold text-white">
+                <option value="1.25" ${Number(state.settings.minIncrement) === 1.25 ? 'selected' : ''}>1.25 ${state.settings.unit}</option>
+                <option value="2.5" ${Number(state.settings.minIncrement) === 2.5 ? 'selected' : ''}>2.5 ${state.settings.unit}</option>
+                <option value="5" ${Number(state.settings.minIncrement) === 5 ? 'selected' : ''}>5 ${state.settings.unit}</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-400 mb-1.5">Alarma Temporizador</label>
+              <button onclick="updateSetting('timerSound', !state.settings.timerSound); if(state.settings.timerSound) playTimerBeep();" class="w-full h-11 px-4 rounded-xl border text-sm font-bold flex items-center justify-between ${state.settings.timerSound ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300' : 'bg-[#0B0F17] border-slate-700 text-slate-400'}">
+                <span>${state.settings.timerSound ? 'Sonido Activado' : 'Silenciado'}</span>
+                <i data-lucide="${state.settings.timerSound ? 'volume-2' : 'volume-x'}" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Guía Rápida Integrada para Firebase Spark Gratis (3 min) -->
+        <div class="p-5 rounded-2xl bg-[#131A26] border border-slate-800 space-y-3">
+          <h3 class="text-base font-extrabold text-white flex items-center gap-2">
+            <i data-lucide="book-open" class="w-4 h-4 text-emerald-400"></i>
+            Guía: Activar tu Nube Firebase Gratis (Plan Spark $0) en 3 minutos
+          </h3>
+          <ol class="list-decimal list-inside space-y-2 text-xs text-slate-300 leading-relaxed">
+            <li>Entra a <strong>console.firebase.google.com</strong> con tu cuenta de Google y crea un proyecto gratuito (sin tarjeta).</li>
+            <li>En el menú izquierdo, abre <strong>Authentication → Comenzar</strong> y activa el proveedor <strong>Correo electrónico/contraseña</strong>.</li>
+            <li>Abre <strong>Firestore Database → Crear base de datos</strong> (modo producción). En la pestaña <strong>Reglas</strong>, pega estas reglas privadas para que cada usuario vea solo sus datos y pulsa <strong>Publicar</strong>:</li>
+          </ol>
+          <pre id="firestore-rules-snippet" class="p-3 rounded-xl bg-[#0B0F17] border border-slate-800 text-[11px] text-emerald-300 overflow-x-auto font-mono">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /artifacts/{appId}/users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}</pre>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="copyTextToClipboard(document.getElementById('firestore-rules-snippet').textContent, 'Reglas de Firestore copiadas.')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-cyan-300">Copiar Reglas Firestore</button>
+            <span class="text-[11px] text-slate-400">4. En Configuración del Proyecto → Tus apps → Web (&lt;/&gt;), copia tu <code>firebaseConfig</code> y pégalo en <strong>Configurar mi Firebase Gratis</strong>.</span>
+          </div>
+        </div>
+      `;
+    }
+
+    async function handleEmailAuth() {
+      const email = (document.getElementById('auth-email')?.value || '').trim();
+      const pass = document.getElementById('auth-pass')?.value || '';
+      if (!email || pass.length < 6) {
+        return showToast('Ingresa un correo válido y contraseña de al menos 6 caracteres.', 'warning');
+      }
+      if (!cloud.auth) return showToast('Firebase no está inicializado.', 'error');
+
+      try {
+        cloud.status = 'connecting';
+        updateCloudBadges();
+        if (cloud.authMode === 'register') {
+          await createUserWithEmailAndPassword(cloud.auth, email, pass);
+          showToast('¡Cuenta creada y sincronizada en la nube!', 'success');
+        } else {
+          await signInWithEmailAndPassword(cloud.auth, email, pass);
+          showToast('¡Sesión iniciada! Sincronizando tus datos...', 'success');
+        }
+      } catch (err) {
+        cloud.status = 'local';
+        updateCloudBadges();
+        const msg = err.code === 'auth/email-already-in-use' ? 'Ese correo ya está registrado. Usa "Iniciar Sesión".'
+          : err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' ? 'Correo o contraseña incorrectos.'
+          : err.code === 'auth/operation-not-allowed' ? 'Activa "Correo electrónico/contraseña" en Firebase Authentication.'
+          : (err.message || 'Error al autenticar.');
+        showToast(msg, 'error');
+      }
+    }
+
+    async function handleCloudSignOut() {
+      if (!cloud.auth) return;
+      try {
+        await signOut(cloud.auth);
+        showToast('Sesión cerrada. Ahora estás en Modo Local.', 'info');
+        renderApp();
+      } catch (err) {
+        showToast('Error al cerrar sesión.', 'error');
+      }
+    }
+
+    async function manualCloudSync() {
+      if (!cloud.user || !cloud.db) return showToast('Inicia sesión primero.', 'warning');
+      await pushStateToCloud(true);
+      showToast('Sincronización completada con la nube.', 'success');
+    }
+
+    function openFirebaseConfigModal() {
+      const currentJson = cloud.activeConfig && cloud.configSource !== 'env'
+        ? JSON.stringify(cloud.activeConfig, null, 2)
+        : '';
+
+      openModal(
+        'Configurar mi Firebase Gratis',
+        `
+          <div class="space-y-3.5">
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Pega aquí el objeto JSON de tu <code>firebaseConfig</code> (puedes copiarlo directo desde Firebase Console, incluso con texto extra de JS; la app lo extraerá automáticamente).
+            </p>
+            <textarea id="fb-config-input" rows="8" placeholder='{\n  "apiKey": "AIza...",\n  "authDomain": "tu-app.firebaseapp.com",\n  "projectId": "tu-app",\n  "storageBucket": "tu-app.appspot.com",\n  "messagingSenderId": "123456",\n  "appId": "1:1234:web:abcd"\n}' class="w-full p-3 rounded-xl bg-[#0B0F17] border border-slate-700 text-xs font-mono text-emerald-300 focus:outline-none focus:border-emerald-500">${escapeHTML(currentJson)}</textarea>
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <button onclick="copyCustomConfigCodeBlock()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-cyan-300 inline-flex items-center gap-1.5">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar bloque para pegar en el HTML
+              </button>
+              ${cloud.configSource === 'custom_modal' ? `<button onclick="clearSavedFirebaseConfig()" class="text-xs font-bold text-rose-400 hover:underline">Quitar config guardada</button>` : ''}
+            </div>
+          </div>
+        `,
+        `
+          <button onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300">Cancelar</button>
+          <button onclick="saveCustomFirebaseConfig()" class="px-4 py-2 rounded-xl bg-emerald-500 text-xs font-extrabold text-[#0B0F17]">Guardar y Conectar</button>
+        `
+      );
+    }
+
+    function parseLooseFirebaseConfig(raw) {
+      if (!raw) return null;
+      // Intenta JSON estricto primero
+      try {
+        const direct = JSON.parse(raw);
+        if (isValidFirebaseConfig(direct)) return direct;
+      } catch (e) {}
+      // Extrae pares clave: "valor" aunque el usuario pegue `const firebaseConfig = { apiKey: "..." };`
+      const fields = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
+      const extracted = {};
+      for (const f of fields) {
+        const match = raw.match(new RegExp(`["']?${f}["']?\\s*:\\s*["']([^"']+)["']`));
+        if (match && match[1]) extracted[f] = match[1].trim();
+      }
+      return isValidFirebaseConfig(extracted) ? extracted : null;
+    }
+
+    async function saveCustomFirebaseConfig() {
+      const raw = document.getElementById('fb-config-input')?.value || '';
+      const parsed = parseLooseFirebaseConfig(raw);
+      if (!parsed) {
+        return showToast('Configuración incompleta. Debe incluir al menos apiKey, projectId y appId.', 'error');
+      }
+      await LocalStore.set(LOCAL_FB_CFG_KEY, parsed);
+      closeModal();
+      showToast('Configuración de Firebase guardada. Conectando...', 'success');
+      await initCloudConnection();
+      renderApp();
+    }
+
+    async function clearSavedFirebaseConfig() {
+      await LocalStore.remove(LOCAL_FB_CFG_KEY);
+      closeModal();
+      await initCloudConnection();
+      renderApp();
+      showToast('Configuración personalizada eliminada.', 'info');
+    }
+
+    function copyCustomConfigCodeBlock() {
+      const raw = document.getElementById('fb-config-input')?.value || '';
+      const parsed = parseLooseFirebaseConfig(raw) || cloud.activeConfig;
+      if (!parsed) return showToast('Pega primero tu configuración arriba.', 'warning');
+      const snippet = `const CUSTOM_FIREBASE_CONFIG = ${JSON.stringify(parsed, null, 2)};`;
+      copyTextToClipboard(snippet, 'Bloque CUSTOM_FIREBASE_CONFIG copiado. Pégalo al inicio del script si quieres compartir el archivo ya conectado con tu gym bro.');
+    }
+
+    function copyTextToClipboard(text, successMsg = 'Copiado al portapapeles.') {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        showToast(successMsg, 'success');
+      } catch (e) {
+        showToast('No se pudo copiar automáticamente.', 'error');
+      }
+    }
+
+    function updateSetting(key, val) {
+      state.settings[key] = val;
+      saveState();
+      renderApp();
+      showToast('Preferencia guardada.', 'success');
+    }
+
+    function downloadJSONBackup() {
+      try {
+        const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `hypertrophyos_cloud_backup_${getTodayISO()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showToast('Respaldo .JSON descargado.', 'success');
+      } catch (e) {
+        showToast('Error al descargar JSON.', 'error');
+      }
+    }
+
+    function triggerImportJSON() {
+      const inp = document.getElementById('json-import-input');
+      if (inp) { inp.value = ''; inp.click(); }
+    }
+
+    document.getElementById('json-import-input').addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const parsed = JSON.parse(ev.target.result);
+          if (!parsed || !Array.isArray(parsed.routine) || !Array.isArray(parsed.workouts)) throw new Error();
+          openConfirmModal(
+            'Importar Base de Datos',
+            `Se cargarán ${parsed.workouts.length} sesiones y ${parsed.routine.length} días. Se sobrescribirán los datos actuales.`,
+            'Importar',
+            () => {
+              const def = getDefaultState();
+              state = { ...def, ...parsed, settings: { ...def.settings, ...(parsed.settings || {}) } };
+              saveState();
+              destroyAllCharts();
+              renderApp();
+              showToast('Base de datos importada y sincronizada.', 'success');
+            }
+          );
+        } catch (err) {
+          showToast('Archivo JSON inválido.', 'error');
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    function exportCSV() {
+      if (!state.workouts.length) return showToast('No hay sesiones para exportar.', 'warning');
+      const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+      const headers = ['Fecha', 'Día', 'Macrociclo', 'Mesociclo', 'Semana', 'Peso Corporal', 'Ejercicio', 'Músculo', 'Serie', `Peso (${state.settings.unit})`, 'Reps', 'RIR', `e1RM (${state.settings.unit})`, 'Volumen', 'PR', 'Notas'];
+      const lines = [headers.map(esc).join(',')];
+
+      for (const wk of getSortedWorkouts()) {
+        const macro = state.macrocycles.find(m => m.id === wk.macroId)?.name || '';
+        const meso = state.mesocycles.find(m => m.id === wk.mesoId)?.name || '';
+        for (const ex of wk.exercises || []) {
+          (ex.sets || []).forEach((s, idx) => {
+            if (!s.completed) return;
+            const e1 = s.e1rm || calcE1RM(s.weight, s.reps, s.rir);
+            const vol = Math.round((s.weight || 0) * (s.reps || 0));
+            lines.push([
+              wk.date, wk.dayName, macro, meso, wk.weekNumber || '', wk.bodyweight || '',
+              ex.name, ex.muscle, idx + 1, s.weight, s.reps, s.rir, e1, vol,
+              (s.isWeightPR || s.isE1rmPR) ? 'SI' : '', ex.notes || wk.notes || ''
+            ].map(esc).join(','));
+          });
+        }
+      }
+
+      const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `hypertrophyos_sheets_${getTodayISO()}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast('CSV exportado (UTF-8 listo para Google Sheets y Excel).', 'success');
+    }
+
+    /*************************************************************************
+     * 16. MODALES Y TOASTS
+     *************************************************************************/
+    function openModal(title, bodyHTML, footerHTML) {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-body').innerHTML = bodyHTML;
+      document.getElementById('modal-footer').innerHTML = footerHTML;
+      document.getElementById('modal-backdrop').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeModal() {
+      document.getElementById('modal-backdrop').classList.add('hidden');
+    }
+
+    function openConfirmModal(title, message, confirmLabel, onConfirm) {
+      window.__pendingConfirmAction = () => { closeModal(); onConfirm(); };
+      openModal(
+        title,
+        `<p class="text-sm text-slate-300 leading-relaxed">${escapeHTML(message)}</p>`,
+        `<button onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300">Cancelar</button><button onclick="window.__pendingConfirmAction()" class="px-4 py-2 rounded-xl bg-rose-500 text-xs font-extrabold text-white">${escapeHTML(confirmLabel)}</button>`
+      );
+    }
+
+    document.getElementById('modal-backdrop').addEventListener('click', (e) => {
+      if (e.target.id === 'modal-backdrop') closeModal();
+    });
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const styles = {
+        success: 'bg-emerald-950/95 border-emerald-500/50 text-emerald-200',
+        error: 'bg-rose-950/95 border-rose-500/50 text-rose-200',
+        warning: 'bg-amber-950/95 border-amber-500/50 text-amber-200',
+        pr: 'bg-amber-950/95 border-amber-400 text-amber-200',
+        info: 'bg-[#131A26]/95 border-cyan-500/40 text-slate-100'
+      };
+      const el = document.createElement('div');
+      el.className = `pointer-events-auto px-4 py-3 rounded-xl border shadow-xl text-xs sm:text-sm font-semibold backdrop-blur-md transition-all duration-300 ${styles[type] || styles.info}`;
+      el.textContent = message;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.classList.add('opacity-0', 'translate-y-1');
+        setTimeout(() => el.remove(), 300);
+      }, type === 'pr' ? 4500 : 3200);
+    }
+
+    /*************************************************************************
+     * 17. EXPONER FUNCIONES A WINDOW (Necesario para módulos ESM + onclick)
+     *************************************************************************/
+    Object.assign(window, {
+      cloud, uiFilters, navigateTo, renderApp, destroyAllCharts,
+      loadDemoData, clearDemoOrAllData, startSuggestedWorkout, openHistoryItem,
+      switchDraftDay, updateDraftMeta, updateExerciseSessionNote, updateSetField,
+      toggleSetComplete, addDraftSet, removeDraftSet, toggleWarmup, confirmResetDraft, finishAndSaveWorkout,
+      startRestTimer, adjustRestTimer, togglePauseRestTimer, stopRestTimer, playTimerBeep,
+      setActiveMesoWeek, advanceActiveMesoWeek, activateMacro, activateMeso,
+      openMacroModal, saveMacroModal, confirmDeleteMacro, openMesoModal, saveMesoModal, confirmDeleteMeso,
+      updatePRTableOnly,
+      openDayModal, saveDayModal, confirmDeleteDay, openExerciseModal, saveExerciseModal, moveExercise, confirmDeleteExercise, confirmRestoreDefaultRoutine,
+      toggleHistoryExpand, confirmDeleteWorkout,
+      openFirebaseConfigModal, saveCustomFirebaseConfig, clearSavedFirebaseConfig, copyCustomConfigCodeBlock, copyTextToClipboard,
+      handleEmailAuth, handleCloudSignOut, manualCloudSync, updateSetting,
+      downloadJSONBackup, triggerImportJSON, exportCSV, closeModal
+    });
+
+    /*************************************************************************
+     * 18. ARRANQUE DE LA APLICACIÓN
+     *************************************************************************/
+    async function bootstrap() {
+      initDynamicPWAAssets();
+      const savedLocal = await LocalStore.get(LOCAL_DB_KEY);
+      if (savedLocal && Array.isArray(savedLocal.routine)) {
+        const def = getDefaultState();
+        state = {
+          ...def,
+          ...savedLocal,
+          settings: { ...def.settings, ...(savedLocal.settings || {}) }
+        };
+      }
+      renderApp();
+      await initCloudConnection();
+    }
+
+    bootstrap();
+  </script>
+</body>
+</html>
